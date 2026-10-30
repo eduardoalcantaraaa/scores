@@ -3,791 +3,317 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scores Médicos — Calculadoras</title>
+<title>Scores e Guia Médico</title>
 <style>
-  :root {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --card-hover: #273449;
-    --primary: #38bdf8;
-    --primary-dark: #0ea5e9;
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-    --success: #22c55e;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --border: #334155;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    padding-bottom: 40px;
-  }
-  header {
-    background: linear-gradient(135deg, #0ea5e9, #6366f1);
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(0,0,0,.3);
-  }
-  header h1 { font-size: 1.4rem; margin-bottom: 4px; }
-  header p { font-size: .85rem; opacity: .9; }
+  :root { --bg: #0f172a; --card: #1e293b; --hover: #273449; --pri: #38bdf8; --txt: #e2e8f0; --mut: #94a3b8; --ok: #22c55e; --wr: #f59e0b; --dg: #ef4444; --bd: #334155; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+  body { background: var(--bg); color: var(--txt); padding-bottom: 40px; overflow-x: hidden; }
+  
+  header { background: linear-gradient(135deg, #0ea5e9, #6366f1); padding: 20px; text-align: center; position: relative; }
+  header h1 { font-size: 1.4rem; cursor: pointer; }
+  header p { font-size: 0.85rem; opacity: 0.9; }
+  
+  .btn-guia { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; backdrop-filter: blur(4px); }
+  
+  input[type="text"] { width: 100%; max-width: 600px; padding: 12px; border-radius: 8px; border: none; margin-top: 16px; background: rgba(255,255,255,0.15); color: #fff; font-size: 1rem; }
+  input[type="text"]::placeholder { color: rgba(255,255,255,0.7); }
+  
+  .container { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+  .pg { display: none; animation: fade .3s; }
+  .pg.on { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+  
+  .back { background: none; border: none; color: var(--pri); font-size: 1rem; font-weight: bold; cursor: pointer; margin-bottom: 16px; padding: 8px 0; }
+  .title { font-size: 1.3rem; margin-bottom: 16px; border-bottom: 1px solid var(--bd); padding-bottom: 8px; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
+  
+  .item { background: var(--card); border: 1px solid var(--bd); border-radius: 12px; padding: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-align: left; transition: .2s; color: var(--txt); }
+  .item:hover { background: var(--hover); border-color: var(--pri); transform: translateY(-2px); }
+  .item-title { font-weight: 600; font-size: 1rem; }
+  .item-desc { font-size: 0.8rem; color: var(--mut); margin-top: 4px; }
+  .badge { font-size: 0.8rem; background: rgba(56,189,248,0.15); color: var(--pri); padding: 4px 8px; border-radius: 20px; font-weight: 600; }
+  
+  .card { background: var(--card); border-radius: 12px; padding: 18px; border: 1px solid var(--bd); }
+  .q { padding: 12px 0; border-bottom: 1px solid var(--bd); }
+  .q:last-child { border-bottom: none; }
+  .q-title { display: block; font-size: 0.95rem; margin-bottom: 10px; font-weight: 500; }
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opts label { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); font-size: 0.9rem; cursor: pointer; }
+  .opts label:hover { background: rgba(255,255,255,0.08); }
+  input[type="radio"] { accent-color: var(--pri); width: 18px; height: 18px; }
+  input[type="number"] { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--bd); background: var(--bg); color: var(--txt); font-size: 1rem; }
+  
+  .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+  .btn { background: var(--pri); color: var(--bg); border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; font-size: 1rem; }
+  .btn.sec { background: transparent; color: var(--mut); border: 1px solid var(--bd); flex: 0; padding: 12px 20px; }
+  
+  .res { display: none; margin-top: 16px; padding: 16px; border-radius: 8px; border-left: 4px solid var(--pri); background: rgba(56,189,248,0.1); }
+  .res.on { display: block; animation: fade .3s; }
+  .val { font-size: 1.8rem; font-weight: bold; color: var(--pri); }
+  .txt { font-size: 1rem; margin-top: 6px; font-weight: 500; }
+  .low { border-color: var(--ok); background: rgba(34,197,94,0.1); } .low .val { color: var(--ok); }
+  .mid { border-color: var(--wr); background: rgba(245,158,11,0.1); } .mid .val { color: var(--wr); }
+  .high { border-color: var(--dg); background: rgba(239,68,68,0.1); } .high .val { color: var(--dg); }
+  .empty { text-align: center; color: var(--mut); padding: 20px; display: none; }
 
-  .search-box {
-    max-width: 600px;
-    margin: 16px auto 0;
-  }
-  .search-box input {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 10px;
-    border: none;
-    font-size: 1rem;
-    background: rgba(255,255,255,.15);
-    color: #fff;
-    backdrop-filter: blur(10px);
-  }
-  .search-box input::placeholder { color: rgba(255,255,255,.7); }
-
-  .tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 16px;
-    max-width: 900px;
-    margin: 0 auto;
-    scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab {
-    padding: 8px 16px;
-    border-radius: 20px;
-    background: var(--card);
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    white-space: nowrap;
-    font-size: .85rem;
-    transition: all .2s;
-  }
-  .tab.active {
-    background: var(--primary);
-    color: #0f172a;
-    font-weight: 600;
-    border-color: var(--primary);
-  }
-
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 16px;
-  }
-
-  .score-card {
-    background: var(--card);
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 16px;
-    border: 1px solid var(--border);
-    transition: all .2s;
-  }
-  .score-card h2 {
-    font-size: 1.15rem;
-    color: var(--primary);
-    margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-  }
-  .score-card .desc {
-    font-size: .8rem;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-  }
-  .score-card.collapsed .score-body { display: none; }
-  .score-card .toggle-icon { transition: transform .2s; font-size: 1rem; }
-  .score-card.collapsed .toggle-icon { transform: rotate(-90deg); }
-
-  .question {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .question:last-of-type { border-bottom: none; }
-  .question label.q-title {
-    display: block;
-    font-size: .9rem;
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
-  .options { display: flex; flex-direction: column; gap: 6px; }
-  .options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: rgba(255,255,255,.03);
-    cursor: pointer;
-    font-size: .85rem;
-    transition: background .15s;
-  }
-  .options label:hover { background: rgba(255,255,255,.08); }
-  .options input[type="radio"] { accent-color: var(--primary); }
-  .options input[type="number"] {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 8px 10px;
-    border-radius: 8px;
-    width: 100%;
-    font-size: .9rem;
-  }
-
-  .result {
-    margin-top: 14px;
-    padding: 14px;
-    border-radius: 10px;
-    background: rgba(56,189,248,.1);
-    border-left: 4px solid var(--primary);
-    display: none;
-  }
-  .result.show { display: block; animation: fadeIn .3s; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
-  .result .score-value {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--primary);
-  }
-  .result .interpretation {
-    font-size: .9rem;
-    margin-top: 6px;
-    font-weight: 500;
-  }
-  .result .recommendation {
-    font-size: .8rem;
-    color: var(--text-muted);
-    margin-top: 6px;
-  }
-  .result.risk-low { background: rgba(34,197,94,.1); border-color: var(--success); }
-  .result.risk-low .score-value { color: var(--success); }
-  .result.risk-mid { background: rgba(245,158,11,.1); border-color: var(--warning); }
-  .result.risk-mid .score-value { color: var(--warning); }
-  .result.risk-high { background: rgba(239,68,68,.1); border-color: var(--danger); }
-  .result.risk-high .score-value { color: var(--danger); }
-
-  .btn {
-    background: var(--primary);
-    color: #0f172a;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: .9rem;
-    margin-top: 12px;
-    transition: background .2s;
-  }
-  .btn:hover { background: var(--primary-dark); }
-  .btn-secondary {
-    background: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    margin-left: 8px;
-  }
-  .btn-secondary:hover { background: var(--card-hover); color: var(--text); }
-
-  .no-results {
-    text-align: center;
-    padding: 40px;
-    color: var(--text-muted);
-    display: none;
-  }
-  .no-results.show { display: block; }
-
-  .disclaimer {
-    max-width: 900px;
-    margin: 24px auto 0;
-    padding: 14px 18px;
-    background: rgba(245,158,11,.08);
-    border-left: 4px solid var(--warning);
-    border-radius: 8px;
-    font-size: .78rem;
-    color: var(--text-muted);
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-  @media (min-width: 900px) {
-    .disclaimer { margin-left: auto; margin-right: auto; }
-  }
+  /* ESTILOS DA BARRA LATERAL (SIDEBAR) */
+  #sidebar { position: fixed; top: 0; right: -100%; width: 85%; max-width: 400px; height: 100%; background: var(--card); z-index: 1000; transition: 0.3s ease-in-out; padding: 20px; overflow-y: auto; border-left: 1px solid var(--bd); box-shadow: -5px 0 15px rgba(0,0,0,0.5); }
+  #sidebar.open { right: 0; }
+  #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; backdrop-filter: blur(2px); }
+  #overlay.open { display: block; }
+  
+  .drug-card { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; border-left: 3px solid var(--pri); margin-bottom: 10px; }
+  .drug-header { display: flex; justify-content: space-between; align-items: center; }
+  .drug-name { color: var(--pri); font-size: 1.05rem; font-weight: bold; }
+  .drug-class { font-size: 0.7rem; background: var(--bd); padding: 2px 6px; border-radius: 4px; color: var(--mut); }
+  .drug-dose { font-size: 0.9rem; margin-top: 6px; }
+  .drug-obs { font-size: 0.8rem; color: var(--mut); margin-top: 4px; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🩺 Calculadoras de Scores Médicos</h1>
-  <p>Ferramenta de apoio à decisão clínica</p>
-  <div class="search-box">
-    <input type="text" id="search" placeholder="🔍 Buscar score (ex: Glasgow, CURB, CHA2DS2)..." />
-  </div>
+  <h1 onclick="nav('esp')">🩺 Scores Médicos</h1>
+  <button class="btn-guia" onclick="toggleSidebar()">💊 Guia</button>
+  <p id="sub">Selecione a especialidade</p>
+  <div id="search-box"><input type="text" id="search" placeholder="🔍 Buscar score..."></div>
 </header>
 
-<div class="tabs" id="tabs"></div>
+<!-- BARRA LATERAL (GUIA DE PRESCRIÇÃO) -->
+<div id="sidebar">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <h2 style="font-size:1.2rem; color:var(--pri);">💊 Guia de Prescrição</h2>
+    <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--mut); font-size:1.5rem; cursor:pointer;">✕</button>
+  </div>
+  <input type="text" id="search-drug" placeholder="🔍 Buscar remédio..." style="margin-top:0; margin-bottom:16px; background:var(--bg); border:1px solid var(--bd); color:white;">
+  <div id="drug-list"></div>
+</div>
+<div id="overlay" onclick="toggleSidebar()"></div>
 
-<div class="container" id="scores-container"></div>
+<div class="container">
+  <div id="pg-esp" class="pg on">
+    <div class="grid" id="list-esp"></div>
+    <div class="empty" id="empty-esp">Nenhum resultado encontrado.</div>
+  </div>
 
-<div class="no-results" id="no-results">Nenhum score encontrado para sua busca.</div>
+  <div id="pg-score" class="pg">
+    <button class="back" onclick="nav('esp')">← Voltar</button>
+    <h2 class="title" id="title-score"></h2>
+    <div class="grid" id="list-score"></div>
+    <div class="empty" id="empty-score">Nenhum resultado encontrado.</div>
+  </div>
 
-<div class="disclaimer">
-  ⚠️ <strong>Aviso:</strong> Estas calculadoras são ferramentas de apoio e não substituem o julgamento clínico, diretrizes oficiais ou avaliação médica individualizada. Sempre confirme os critérios na literatura atualizada antes de tomar decisões clínicas.
+  <div id="pg-quiz" class="pg">
+    <button class="back" onclick="nav('score')">← Voltar</button>
+    <div class="card">
+      <h2 id="q-title" style="color:var(--pri); font-size:1.2rem;"></h2>
+      <p id="q-desc" style="color:var(--mut); font-size:0.85rem; margin-bottom:16px;"></p>
+      <div id="q-form"></div>
+      <div class="btn-row">
+        <button class="btn" onclick="calc()">Calcular</button>
+        <button class="btn sec" onclick="reset()">Limpar</button>
+      </div>
+      <div id="q-res" class="res"></div>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ============================================================
-   DEFINIÇÃO DOS SCORES
-   Cada score tem: id, nome, categoria, descrição, campos e
-   função de cálculo que retorna { score, texto, risco }.
-   risco: 'low' | 'mid' | 'high' (para colorir o resultado)
-   ============================================================ */
-
-const SCORES = [
-
-  // ---------- CARDIOLOGIA ----------
-  {
-    id: 'cha2ds2vasc',
-    nome: 'CHA₂DS₂-VASc',
-    categoria: 'Cardiologia',
-    desc: 'Risco de AVC em fibrilação atrial não valvar.',
-    campos: [
-      { tipo: 'radio', titulo: 'Insuficiência cardíaca congestiva / disfunção VE', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Hipertensão arterial', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Idade', opcoes: [['< 65 anos', 0], ['65–74 anos', 1], ['≥ 75 anos', 2]] },
-      { tipo: 'radio', titulo: 'Diabetes mellitus', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'AVC / AIT / tromboembolismo prévio', opcoes: [['Não', 0], ['Sim', 2]] },
-      { tipo: 'radio', titulo: 'Doença vascular (IAM, DAP, placa aórtica)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Sexo', opcoes: [['Masculino', 0], ['Feminino', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s === 0) { txt = 'Risco baixo — anticoagulação geralmente não indicada.'; risco = 'low'; }
-      else if (s === 1) { txt = 'Risco intermediário — considerar anticoagulação (decisão individualizada).'; risco = 'mid'; }
-      else { txt = 'Risco elevado — anticoagulação oral recomendada.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  {
-    id: 'hasbled',
-    nome: 'HAS-BLED',
-    categoria: 'Cardiologia',
-    desc: 'Risco de sangramento maior em uso de anticoagulante.',
-    campos: [
-      { tipo: 'radio', titulo: 'Hipertensão (PA sistólica > 160 mmHg)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Função renal alterada (diálise, transplante, creatinina > 2,26 mg/dL)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Função hepática alterada (cirrose, bilirrubina > 2x, AST/ALT > 3x)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'AVC prévio', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Sangramento prévio ou predisposição', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'INR lábil (se em warfarin)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Idade > 65 anos', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Drogas (AINEs/antiplaquetários) ou álcool (≥ 8 doses/sem)', opcoes: [['Não', 0], ['Sim', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 2) { txt = 'Risco baixo/moderado de sangramento.'; risco = 'low'; }
-      else if (s === 3) { txt = 'Risco elevado — cautela e monitorização.'; risco = 'mid'; }
-      else { txt = 'Risco muito elevado — revisar necessidade de anticoagulação.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  {
-    id: 'timi',
-    nome: 'TIMI (SCA sem supra)',
-    categoria: 'Cardiologia',
-    desc: 'Risco de eventos em síndrome coronariana aguda sem supra de ST.',
-    campos: [
-      { tipo: 'radio', titulo: 'Idade ≥ 65 anos', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: '≥ 3 fatores de risco para DAC', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'DAC conhecida (estenose ≥ 50%)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Uso de AAS nos últimos 7 dias', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Angina grave recente (≥ 2 episódios em 24h)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Alterações de ST ≥ 0,5 mm', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Marcadores de necrose elevados', opcoes: [['Não', 0], ['Sim', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 2) { txt = 'Risco baixo (≈ 4–8% em 14 dias).'; risco = 'low'; }
-      else if (s <= 4) { txt = 'Risco intermediário (≈ 13–20%).'; risco = 'mid'; }
-      else { txt = 'Risco alto (≥ 26%) — considerar estratégia invasiva precoce.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  // ---------- PNEUMOLOGIA ----------
-  {
-    id: 'curb65',
-    nome: 'CURB-65',
-    categoria: 'Pneumologia',
-    desc: 'Gravidade de pneumonia adquirida na comunidade.',
-    campos: [
-      { tipo: 'radio', titulo: 'Confusão mental', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Ureia > 42 mg/dL (7 mmol/L)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'FR ≥ 30 irpm', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'PA: sistólica < 90 ou diastólica ≤ 60 mmHg', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Idade ≥ 65 anos', opcoes: [['Não', 0], ['Sim', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 1) { txt = 'Baixo risco — tratamento ambulatorial possível.'; risco = 'low'; }
-      else if (s === 2) { txt = 'Risco intermediário — considerar internação.'; risco = 'mid'; }
-      else { txt = 'Alto risco — internação, considerar UTI se ≥ 4.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  {
-    id: 'wells_tep',
-    nome: 'Wells (TEP)',
-    categoria: 'Pneumologia',
-    desc: 'Probabilidade de tromboembolismo pulmonar.',
-    campos: [
-      { tipo: 'radio', titulo: 'Sinais clínicos de TVP', opcoes: [['Não', 0], ['Sim', 3]] },
-      { tipo: 'radio', titulo: 'TEP é diagnóstico mais provável', opcoes: [['Não', 0], ['Sim', 3]] },
-      { tipo: 'radio', titulo: 'FC > 100 bpm', opcoes: [['Não', 0], ['Sim', 1.5]] },
-      { tipo: 'radio', titulo: 'Imobilização ≥ 3 dias ou cirurgia recente', opcoes: [['Não', 0], ['Sim', 1.5]] },
-      { tipo: 'radio', titulo: 'TVP/TEP prévio', opcoes: [['Não', 0], ['Sim', 1.5]] },
-      { tipo: 'radio', titulo: 'Hemoptise', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Câncer ativo (tratamento nos últimos 6 meses)', opcoes: [['Não', 0], ['Sim', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 4) { txt = 'Probabilidade baixa — considerar D-dímero.'; risco = 'low'; }
-      else if (s <= 6) { txt = 'Probabilidade moderada — investigar com imagem.'; risco = 'mid'; }
-      else { txt = 'Probabilidade alta — angio-TC recomendada.'; risco = 'high'; }
-      return { score: s.toFixed(1), texto: txt, risco };
-    }
-  },
-
-  // ---------- NEUROLOGIA ----------
-  {
-    id: 'glasgow',
-    nome: 'Escala de Coma de Glasgow',
-    categoria: 'Neurologia',
-    desc: 'Avaliação do nível de consciência (3–15).',
-    campos: [
-      { tipo: 'radio', titulo: 'Abertura ocular (O)', opcoes: [['Espontânea', 4], ['Ao chamado', 3], ['À dor', 2], ['Ausente', 1]] },
-      { tipo: 'radio', titulo: 'Resposta verbal (V)', opcoes: [['Orientada', 5], ['Confusa', 4], ['Palavras inapropriadas', 3], ['Sons incompreensíveis', 2], ['Ausente', 1]] },
-      { tipo: 'radio', titulo: 'Resposta motora (M)', opcoes: [['Obedece comandos', 6], ['Localiza dor', 5], ['Retirada à dor', 4], ['Flexão anormal (decorticação)', 3], ['Extensão (descerebração)', 2], ['Ausente', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s >= 13) { txt = 'Comprometimento leve.'; risco = 'low'; }
-      else if (s >= 9) { txt = 'Comprometimento moderado.'; risco = 'mid'; }
-      else { txt = 'Comprometimento grave — considerar via aérea definitiva (≤ 8).'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  {
-    id: 'nihss',
-    nome: 'NIHSS (simplificado)',
-    categoria: 'Neurologia',
-    desc: 'Gravidade do déficit neurológico no AVC isquêmico. (Versão simplificada — use a escala completa na prática.)',
-    campos: [
-      { tipo: 'radio', titulo: 'Nível de consciência', opcoes: [['Alerta', 0], ['Sonolento', 1], ['Estuporoso', 2], ['Coma', 3]] },
-      { tipo: 'radio', titulo: 'Melhor olhar (desvio conjugado)', opcoes: [['Normal', 0], ['Paresia parcial', 1], ['Desvio forçado', 2]] },
-      { tipo: 'radio', titulo: 'Campo visual', opcoes: [['Normal', 0], ['Hemianopsia parcial', 1], ['Hemianopsia completa', 2], ['Cegueira bilateral', 3]] },
-      { tipo: 'radio', titulo: 'Paresia facial', opcoes: [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Completa', 3]] },
-      { tipo: 'radio', titulo: 'Motor — membro superior', opcoes: [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Grave', 3], ['Plegia', 4]] },
-      { tipo: 'radio', titulo: 'Motor — membro inferior', opcoes: [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Grave', 3], ['Plegia', 4]] },
-      { tipo: 'radio', titulo: 'Ataxia', opcoes: [['Ausente', 0], ['Presente em 1 membro', 1], ['Presente em 2 membros', 2]] },
-      { tipo: 'radio', titulo: 'Sensibilidade', opcoes: [['Normal', 0], ['Perda leve', 1], ['Perda grave', 2]] },
-      { tipo: 'radio', titulo: 'Linguagem', opcoes: [['Normal', 0], ['Afasia leve', 1], ['Afasia grave', 2], ['Afasia global / mutismo', 3]] },
-      { tipo: 'radio', titulo: 'Disartria', opcoes: [['Normal', 0], ['Leve', 1], ['Grave', 2]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s === 0) { txt = 'Sem déficit.'; risco = 'low'; }
-      else if (s <= 4) { txt = 'AVC leve.'; risco = 'low'; }
-      else if (s <= 15) { txt = 'AVC moderado.'; risco = 'mid'; }
-      else if (s <= 20) { txt = 'AVC moderado a grave.'; risco = 'high'; }
-      else { txt = 'AVC grave.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  // ---------- NEFROLOGIA ----------
-  {
-    id: 'ckd_epi',
-    nome: 'TFG estimada (CKD-EPI 2021)',
-    categoria: 'Nefrologia',
-    desc: 'Taxa de filtração glomerular estimada pela creatinina.',
-    campos: [
-      { tipo: 'radio', titulo: 'Sexo', opcoes: [['Masculino', 'M'], ['Feminino', 'F']] },
-      { tipo: 'number', titulo: 'Idade (anos)', id: 'idade', placeholder: 'Ex: 55' },
-      { tipo: 'number', titulo: 'Creatinina sérica (mg/dL)', id: 'cr', placeholder: 'Ex: 1.2' },
-    ],
-    calc(v, inputs) {
-      const idade = parseFloat(inputs.idade);
-      const cr = parseFloat(inputs.cr);
-      if (!idade || !cr) return { score: '—', texto: 'Preencha idade e creatinina.', risco: 'mid' };
-      const sexo = v[0];
-      const kappa = sexo === 'F' ? 0.7 : 0.9;
-      const alpha = sexo === 'F' ? -0.241 : -0.302;
-      const ratio = cr / kappa;
-      let tfg = 142 * Math.pow(Math.min(ratio, 1), alpha) * Math.pow(Math.max(ratio, 1), -1.200) * Math.pow(0.9938, idade);
-      if (sexo === 'F') tfg *= 1.012;
-      const tfgR = tfg.toFixed(1);
-      let txt, risco;
-      if (tfg >= 90) { txt = 'Estágio G1 — função normal ou alta.'; risco = 'low'; }
-      else if (tfg >= 60) { txt = 'Estágio G2 — leve redução.'; risco = 'low'; }
-      else if (tfg >= 45) { txt = 'Estágio G3a — redução leve a moderada.'; risco = 'mid'; }
-      else if (tfg >= 30) { txt = 'Estágio G3b — redução moderada a grave.'; risco = 'mid'; }
-      else if (tfg >= 15) { txt = 'Estágio G4 — redução grave.'; risco = 'high'; }
-      else { txt = 'Estágio G5 — falência renal.'; risco = 'high'; }
-      return { score: `${tfgR} mL/min/1,73m²`, texto: txt, risco };
-    }
-  },
-
-  // ---------- GASTRO ----------
-  {
-    id: 'child_pugh',
-    nome: 'Child-Pugh',
-    categoria: 'Gastroenterologia',
-    desc: 'Gravidade da cirrose hepática.',
-    campos: [
-      { tipo: 'radio', titulo: 'Bilirrubina total', opcoes: [['< 2 mg/dL', 1], ['2–3 mg/dL', 2], ['> 3 mg/dL', 3]] },
-      { tipo: 'radio', titulo: 'Albumina', opcoes: [['> 3,5 g/dL', 1], ['2,8–3,5 g/dL', 2], ['< 2,8 g/dL', 3]] },
-      { tipo: 'radio', titulo: 'INR', opcoes: [['< 1,7', 1], ['1,7–2,3', 2], ['> 2,3', 3]] },
-      { tipo: 'radio', titulo: 'Ascite', opcoes: [['Ausente', 1], ['Leve / controlada', 2], ['Moderada a grave / refratária', 3]] },
-      { tipo: 'radio', titulo: 'Encefalopatia', opcoes: [['Ausente', 1], ['Grau I–II', 2], ['Grau III–IV', 3]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 6) { txt = 'Classe A — cirrose compensada (sobrevida ~100% em 1 ano).'; risco = 'low'; }
-      else if (s <= 9) { txt = 'Classe B — comprometimento significativo (~80% em 1 ano).'; risco = 'mid'; }
-      else { txt = 'Classe C — cirrose descompensada (~45% em 1 ano).'; risco = 'high'; }
-      return { score: `${s} (Classe ${s <= 6 ? 'A' : s <= 9 ? 'B' : 'C'})`, texto: txt, risco };
-    }
-  },
-
-  {
-    id: 'glasgow_blatchford',
-    nome: 'Glasgow-Blatchford',
-    categoria: 'Gastroenterologia',
-    desc: 'Risco em hemorragia digestiva alta.',
-    campos: [
-      { tipo: 'radio', titulo: 'Ureia (mg/dL)', opcoes: [['< 40', 0], ['40–48', 2], ['49–70', 3], ['71–100', 4], ['101–140', 5], ['> 140', 6]] },
-      { tipo: 'radio', titulo: 'Hemoglobina (g/dL) — homem', opcoes: [['≥ 13', 0], ['12–12,9', 1], ['10–11,9', 3], ['< 10', 6]] },
-      { tipo: 'radio', titulo: 'Hemoglobina (g/dL) — mulher', opcoes: [['≥ 12', 0], ['10–11,9', 1], ['< 10', 6]] },
-      { tipo: 'radio', titulo: 'PA sistólica (mmHg)', opcoes: [['≥ 110', 0], ['100–109', 1], ['90–99', 2], ['< 90', 3]] },
-      { tipo: 'radio', titulo: 'FC ≥ 100 bpm', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Melena', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Síncope', opcoes: [['Não', 0], ['Sim', 2]] },
-      { tipo: 'radio', titulo: 'Doença hepática', opcoes: [['Não', 0], ['Sim', 2]] },
-      { tipo: 'radio', titulo: 'Insuficiência cardíaca', opcoes: [['Não', 0], ['Sim', 2]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s === 0) { txt = 'Risco muito baixo — alta possível se critérios clínicos.'; risco = 'low'; }
-      else if (s <= 5) { txt = 'Risco baixo — considerar alta precoce.'; risco = 'mid'; }
-      else { txt = 'Alto risco — internação e endoscopia precoce.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  // ---------- INFECTOLOGIA ----------
-  {
-    id: 'qsofa',
-    nome: 'qSOFA',
-    categoria: 'Infectologia',
-    desc: 'Triagem rápida de sepse à beira-leito.',
-    campos: [
-      { tipo: 'radio', titulo: 'FR ≥ 22 irpm', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Alteração do estado mental (Glasgow < 15)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'PA sistólica ≤ 100 mmHg', opcoes: [['Não', 0], ['Sim', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s < 2) { txt = 'Baixo risco de desfecho desfavorável.'; risco = 'low'; }
-      else { txt = 'Alto risco — avaliar sepse e disfunção orgânica (SOFA).'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  // ---------- PEDIATRIA ----------
-  {
-    id: 'apgar',
-    nome: 'Apgar (1º e 5º minuto)',
-    categoria: 'Pediatria',
-    desc: 'Avaliação do recém-nascido.',
-    campos: [
-      { tipo: 'radio', titulo: 'Frequência cardíaca', opcoes: [['Ausente', 0], ['< 100 bpm', 1], ['> 100 bpm', 2]] },
-      { tipo: 'radio', titulo: 'Esforço respiratório', opcoes: [['Ausente', 0], ['Lento/irregular', 1], ['Choro forte', 2]] },
-      { tipo: 'radio', titulo: 'Tônus muscular', opcoes: [['Flácido', 0], ['Alguma flexão', 1], ['Movimento ativo', 2]] },
-      { tipo: 'radio', titulo: 'Reflexo de irritabilidade', opcoes: [['Sem resposta', 0], ['Careta', 1], ['Choro/tosse/espirro', 2]] },
-      { tipo: 'radio', titulo: 'Cor da pele', opcoes: [['Cianose central', 0], ['Acrocianose', 1], ['Rosado', 2]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s >= 7) { txt = 'Boa vitalidade.'; risco = 'low'; }
-      else if (s >= 4) { txt = 'Depressão moderada — reanimação conforme necessário.'; risco = 'mid'; }
-      else { txt = 'Depressão grave — reanimação imediata.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  // ---------- CIRURGIA ----------
-  {
-    id: 'alvarado',
-    nome: 'Alvarado (MANTRELS)',
-    categoria: 'Cirurgia',
-    desc: 'Probabilidade de apendicite aguda.',
-    campos: [
-      { tipo: 'radio', titulo: 'Migração da dor para FID', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Anorexia', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Náusea/vômito', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Dor à palpação em FID', opcoes: [['Não', 0], ['Sim', 2]] },
-      { tipo: 'radio', titulo: 'Descompressão dolorosa (Blumberg)', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Temperatura > 37,3 °C', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Leucocitose > 10.000/mm³', opcoes: [['Não', 0], ['Sim', 2]] },
-      { tipo: 'radio', titulo: 'Desvio à esquerda (neutrofilia > 75%)', opcoes: [['Não', 0], ['Sim', 1]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 4) { txt = 'Apendicite improvável — considerar diagnósticos alternativos.'; risco = 'low'; }
-      else if (s <= 6) { txt = 'Possível apendicite — investigar com imagem.'; risco = 'mid'; }
-      else { txt = 'Apendicite provável — avaliação cirúrgica.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  {
-    id: 'wells_tvp',
-    nome: 'Wells (TVP)',
-    categoria: 'Cirurgia',
-    desc: 'Probabilidade de trombose venosa profunda.',
-    campos: [
-      { tipo: 'radio', titulo: 'Câncer ativo', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Paralisia/paresia ou imobilização recente de MMII', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Acamado ≥ 3 dias ou cirurgia < 12 semanas', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Dor à palpação no trajeto de veias profundas', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Edema de todo o membro inferior', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Edema de panturrilha > 3 cm em relação ao contralateral', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Edema com cacifo', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Veias colaterais superficiais', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'TVP prévia', opcoes: [['Não', 0], ['Sim', 1]] },
-      { tipo: 'radio', titulo: 'Diagnóstico alternativo tão provável quanto TVP', opcoes: [['Não', 0], ['Sim', -2]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 0) { txt = 'Probabilidade baixa — considerar D-dímero.'; risco = 'low'; }
-      else if (s <= 2) { txt = 'Probabilidade moderada — ultrassom com Doppler.'; risco = 'mid'; }
-      else { txt = 'Probabilidade alta — ultrassom com Doppler.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
-
-  // ---------- URGÊNCIA ----------
-  {
-    id: 'news2',
-    nome: 'NEWS2 (simplificado)',
-    categoria: 'Urgência',
-    desc: 'Alerta precoce de deterioração clínica.',
-    campos: [
-      { tipo: 'radio', titulo: 'FR (irpm)', opcoes: [['12–20', 0], ['9–11', 1], ['21–24', 2], ['≤ 8', 3], ['≥ 25', 3]] },
-      { tipo: 'radio', titulo: 'SpO₂ (%)', opcoes: [['≥ 96', 0], ['94–95', 1], ['92–93', 2], ['≤ 91', 3]] },
-      { tipo: 'radio', titulo: 'PA sistólica (mmHg)', opcoes: [['111–219', 0], ['101–110', 1], ['91–100', 2], ['≤ 90', 3], ['≥ 220', 3]] },
-      { tipo: 'radio', titulo: 'FC (bpm)', opcoes: [['51–90', 0], ['41–50 ou 91–110', 1], ['111–130', 2], ['≤ 40 ou ≥ 131', 3]] },
-      { tipo: 'radio', titulo: 'Temperatura (°C)', opcoes: [['36,1–38,0', 0], ['35,1–36,0 ou 38,1–39,0', 1], ['≥ 39,1', 2], ['≤ 35,0', 3]] },
-      { tipo: 'radio', titulo: 'Nível de consciência', opcoes: [['Alerta', 0], ['Confuso / V / P / U', 3]] },
-    ],
-    calc(v) {
-      const s = v.reduce((a, b) => a + b, 0);
-      let txt, risco;
-      if (s <= 4) { txt = 'Risco baixo — monitorização de rotina.'; risco = 'low'; }
-      else if (s <= 6) { txt = 'Risco médio — avaliação por médico.'; risco = 'mid'; }
-      else { txt = 'Risco alto — resposta urgente da equipe.'; risco = 'high'; }
-      return { score: s, texto: txt, risco };
-    }
-  },
+// ==========================================
+// 1. BANCO DE DADOS DE SCORES (COMPACTADO)
+// ==========================================
+const DB = [
+  { c: 'Cardiologia', n: 'CHA₂DS₂-VASc', d: 'Risco de AVC em FA.', f: [['IC / Disf. VE', [['Não', 0], ['Sim', 1]]], ['Hipertensão', [['Não', 0], ['Sim', 1]]], ['Idade', [['< 65', 0], ['65-74', 1], ['≥ 75', 2]]], ['Diabetes', [['Não', 0], ['Sim', 1]]], ['AVC/AIT prévio', [['Não', 0], ['Sim', 2]]], ['Doença vascular', [['Não', 0], ['Sim', 1]]], ['Sexo', [['Masc', 0], ['Fem', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s===0?'Baixo risco':s===1?'Risco intermediário':'Alto risco', r: s===0?'low':s===1?'mid':'high' }; } },
+  { c: 'Cardiologia', n: 'HAS-BLED', d: 'Risco de sangramento.', f: [['Hipertensão', [['Não', 0], ['Sim', 1]]], ['Função renal alterada', [['Não', 0], ['Sim', 1]]], ['Função hepática alterada', [['Não', 0], ['Sim', 1]]], ['AVC prévio', [['Não', 0], ['Sim', 1]]], ['Sangramento prévio', [['Não', 0], ['Sim', 1]]], ['INR lábil', [['Não', 0], ['Sim', 1]]], ['Idade > 65', [['Não', 0], ['Sim', 1]]], ['Drogas/Álcool', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=2?'Risco baixo/moderado':'Alto risco', r: s<=2?'low':'high' }; } },
+  { c: 'Cardiologia', n: 'TIMI (SCA)', d: 'Risco em SCA sem supra.', f: [['Idade ≥ 65', [['Não', 0], ['Sim', 1]]], ['≥ 3 fatores risco', [['Não', 0], ['Sim', 1]]], ['DAC conhecida', [['Não', 0], ['Sim', 1]]], ['AAS recente', [['Não', 0], ['Sim', 1]]], ['Angina grave', [['Não', 0], ['Sim', 1]]], ['Alteração ST', [['Não', 0], ['Sim', 1]]], ['Marcadores necrose', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=2?'Baixo':s<=4?'Interm.':'Alto', r: s<=2?'low':s<=4?'mid':'high' }; } },
+  { c: 'Pneumologia', n: 'CURB-65', d: 'Gravidade de pneumonia.', f: [['Confusão', [['Não', 0], ['Sim', 1]]], ['Ureia > 42', [['Não', 0], ['Sim', 1]]], ['FR ≥ 30', [['Não', 0], ['Sim', 1]]], ['PA baixa', [['Não', 0], ['Sim', 1]]], ['Idade ≥ 65', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=1?'Baixo':s===2?'Interm.':'Alto', r: s<=1?'low':s===2?'mid':'high' }; } },
+  { c: 'Pneumologia', n: 'Wells (TEP)', d: 'Probabilidade de TEP.', f: [['Sinais TVP', [['Não', 0], ['Sim', 3]]], ['TEP + provável', [['Não', 0], ['Sim', 3]]], ['FC > 100', [['Não', 0], ['Sim', 1.5]]], ['Imobilização', [['Não', 0], ['Sim', 1.5]]], ['TVP/TEP prévio', [['Não', 0], ['Sim', 1.5]]], ['Hemoptise', [['Não', 0], ['Sim', 1]]], ['Câncer ativo', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s.toFixed(1), t: s<=4?'Baixa':s<=6?'Moderada':'Alta', r: s<=4?'low':s<=6?'mid':'high' }; } },
+  { c: 'Neurologia', n: 'Glasgow', d: 'Nível de consciência.', f: [['Abertura ocular', [['Espontânea', 4], ['Chamado', 3], ['Dor', 2], ['Ausente', 1]]], ['Resposta verbal', [['Orientado', 5], ['Confuso', 4], ['Inapropriado', 3], ['Sons', 2], ['Ausente', 1]]], ['Resposta motora', [['Obedece', 6], ['Localiza', 5], ['Retirada', 4], ['Flexão', 3], ['Extensão', 2], ['Ausente', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s>=13?'Leve':s>=9?'Moderado':'Grave', r: s>=13?'low':s>=9?'mid':'high' }; } },
+  { c: 'Neurologia', n: 'NIHSS', d: 'Gravidade do AVC.', f: [['Consciência', [['Alerta', 0], ['Sonolento', 1], ['Estupor', 2], ['Coma', 3]]], ['Olhar', [['Normal', 0], ['Paresia', 1], ['Desvio', 2]]], ['Campo visual', [['Normal', 0], ['Parcial', 1], ['Completa', 2], ['Cegueira', 3]]], ['Paresia facial', [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Completa', 3]]], ['Motor braço', [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Grave', 3], ['Plegia', 4]]], ['Motor perna', [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Grave', 3], ['Plegia', 4]]], ['Ataxia', [['Ausente', 0], ['1', 1], ['2', 2]]], ['Sensibilidade', [['Normal', 0], ['Leve', 1], ['Grave', 2]]], ['Linguagem', [['Normal', 0], ['Leve', 1], ['Grave', 2], ['Global', 3]]], ['Disartria', [['Normal', 0], ['Leve', 1], ['Grave', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s===0?'Sem déficit':s<=4?'Leve':s<=15?'Moderado':s<=20?'Mod/Grave':'Grave', r: s<=4?'low':s<=15?'mid':'high' }; } },
+  { c: 'Nefrologia', n: 'TFG (CKD-EPI)', d: 'Filtração glomerular.', f: [['Sexo', [['Masc', 'M'], ['Fem', 'F']]], ['Idade (anos)', 'num-idade'], ['Creatinina (mg/dL)', 'num-cr']], calc: (v, i) => { const id = parseFloat(i.idade), cr = parseFloat(i.cr); if(!id||!cr) return { v: '-', t: 'Preencha', r: 'mid' }; const k = v[0]==='F'?0.7:0.9, a = v[0]==='F'?-0.241:-0.302, r = cr/k; let tfg = 142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,id); if(v[0]==='F') tfg*=1.012; return { v: tfg.toFixed(1), t: tfg>=90?'G1':tfg>=60?'G2':tfg>=45?'G3a':tfg>=30?'G3b':tfg>=15?'G4':'G5', r: tfg>=60?'low':tfg>=30?'mid':'high' }; } },
+  { c: 'Gastro', n: 'Child-Pugh', d: 'Cirrose.', f: [['Bilirrubina', [['< 2', 1], ['2-3', 2], ['> 3', 3]]], ['Albumina', [['> 3.5', 1], ['2.8-3.5', 2], ['< 2.8', 3]]], ['INR', [['< 1.7', 1], ['1.7-2.3', 2], ['> 2.3', 3]]], ['Ascite', [['Ausente', 1], ['Leve', 2], ['Grave', 3]]], ['Encefalopatia', [['Ausente', 1], ['I-II', 2], ['III-IV', 3]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=6?'Classe A':s<=9?'Classe B':'Classe C', r: s<=6?'low':s<=9?'mid':'high' }; } },
+  { c: 'Gastro', n: 'Blatchford', d: 'Hemorragia digestiva.', f: [['Ureia', [['< 40', 0], ['40-48', 2], ['49-70', 3], ['71-100', 4], ['101-140', 5], ['> 140', 6]]], ['Hb Homem', [['≥ 13', 0], ['12-12.9', 1], ['10-11.9', 3], ['< 10', 6]]], ['Hb Mulher', [['≥ 12', 0], ['10-11.9', 1], ['< 10', 6]]], ['PAS', [['≥ 110', 0], ['100-109', 1], ['90-99', 2], ['< 90', 3]]], ['FC ≥ 100', [['Não', 0], ['Sim', 1]]], ['Melena', [['Não', 0], ['Sim', 1]]], ['Síncope', [['Não', 0], ['Sim', 2]]], ['Hepatopatia', [['Não', 0], ['Sim', 2]]], ['IC', [['Não', 0], ['Sim', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s===0?'Muito baixo':s<=5?'Baixo':'Alto', r: s===0?'low':s<=5?'mid':'high' }; } },
+  { c: 'Infecto', n: 'qSOFA', d: 'Sepse.', f: [['FR ≥ 22', [['Não', 0], ['Sim', 1]]], ['Alt. mental', [['Não', 0], ['Sim', 1]]], ['PAS ≤ 100', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<2?'Baixo':'Alto', r: s<2?'low':'high' }; } },
+  { c: 'Pediatria', n: 'Apgar', d: 'Avaliação do RN.', f: [['FC', [['Ausente', 0], ['< 100', 1], ['> 100', 2]]], ['Respiração', [['Ausente', 0], ['Lenta', 1], ['Choro', 2]]], ['Tônus', [['Flácido', 0], ['Flexão', 1], ['Ativo', 2]]], ['Reflexo', [['Nenhum', 0], ['Careta', 1], ['Choro', 2]]], ['Cor', [['Cianose', 0], ['Acro', 1], ['Rosado', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s>=7?'Boa vitalidade':s>=4?'Depressão mod.':'Grave', r: s>=7?'low':s>=4?'mid':'high' }; } },
+  { c: 'Cirurgia', n: 'Alvarado', d: 'Apendicite.', f: [['Migração FID', [['Não', 0], ['Sim', 1]]], ['Anorexia', [['Não', 0], ['Sim', 1]]], ['Náusea', [['Não', 0], ['Sim', 1]]], ['Dor FID', [['Não', 0], ['Sim', 2]]], ['Blumberg', [['Não', 0], ['Sim', 1]]], ['Temp > 37.3', [['Não', 0], ['Sim', 1]]], ['Leucocitose', [['Não', 0], ['Sim', 2]]], ['Neutrofilia', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=4?'Improvável':s<=6?'Possível':'Provável', r: s<=4?'low':s<=6?'mid':'high' }; } },
+  { c: 'Cirurgia', n: 'Wells (TVP)', d: 'Trombose Venosa.', f: [['Câncer', [['Não', 0], ['Sim', 1]]], ['Paralisia', [['Não', 0], ['Sim', 1]]], ['Acamado', [['Não', 0], ['Sim', 1]]], ['Dor trajeto', [['Não', 0], ['Sim', 1]]], ['Edema', [['Não', 0], ['Sim', 1]]], ['Cacifo', [['Não', 0], ['Sim', 1]]], ['Colaterais', [['Não', 0], ['Sim', 1]]], ['TVP prévia', [['Não', 0], ['Sim', 1]]], ['Alt. provável', [['Não', 0], ['Sim', -2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=0?'Baixa':s<=2?'Moderada':'Alta', r: s<=0?'low':s<=2?'mid':'high' }; } }
 ];
 
-/* ============================================================
-   RENDERIZAÇÃO
-   ============================================================ */
+// ==========================================
+// 2. BANCO DE DADOS DO GUIA DE PRESCRIÇÃO
+// ==========================================
+const guiaRemedios = [
+  { nome: "Amoxicilina", classe: "Antibiótico", dose: "500mg a 1g, de 8/8h ou 12/12h.", obs: "Ajustar na insuficiência renal." },
+  { nome: "Azitromicina", classe: "Antibiótico", dose: "500mg, 1x ao dia, por 3 a 5 dias.", obs: "Tomar 1h antes ou 2h após comer." },
+  { nome: "Ceftriaxona", classe: "Antibiótico", dose: "1g a 2g, IV, 1x ao dia.", obs: "Não precisa ajustar na função renal." },
+  { nome: "Dipirona", classe: "Analgésico", dose: "500mg a 1g, de 6/6h. (Máx: 4g/dia)", obs: "IV: diluir. Evitar se suspeita de dengue." },
+  { nome: "Paracetamol", classe: "Analgésico", dose: "500mg a 750mg, de 6/6h. (Máx: 4g/dia)", obs: "Cuidado em hepatopatas." },
+  { nome: "Omeprazol", classe: "IBP", dose: "20mg a 40mg, 1x ao dia em jejum.", obs: "Tomar 30 min antes do café." },
+  { nome: "Losartana", classe: "Anti-hipertensivo", dose: "50mg a 100mg, 1x ou 2x ao dia.", obs: "Contraindicado na gestação." },
+  { nome: "Enalapril", classe: "Anti-hipertensivo", dose: "5mg a 20mg, de 12/12h.", obs: "Pode causar tosse seca." },
+  { nome: "Metformina", classe: "Antidiabético", dose: "500mg a 1g, 2x ao dia após refeições.", obs: "Suspender antes de contraste." },
+  { nome: "Enoxaparina", classe: "Anticoagulante", dose: "40mg, SC, 1x/dia (Profilaxia). 1mg/kg 12/12h (Tratamento).", obs: "Ajustar na insuf. renal grave." },
+  { nome: "Hidrocortisona", classe: "Corticoide", dose: "100mg a 200mg, IV, de 6/6h.", obs: "Uso agudo (asma, choque)." },
+  { nome: "Prednisona", classe: "Corticoide", dose: "20mg a 40mg, 1x/dia pela manhã.", obs: "Tomar com alimento." },
+  { nome: "Salbutamol", classe: "Broncodilatador", dose: "Spray: 1-2 jatos de 4/4h. Nebulização: 2,5-5mg.", obs: "Pode causar taquicardia." },
+  { nome: "Ondansetrona", classe: "Antiemético", dose: "4mg a 8mg, de 8/8h (VO ou IV).", obs: "Pode prolongar o QT." }
+];
 
-const container = document.getElementById('scores-container');
-const tabsEl = document.getElementById('tabs');
-const searchEl = document.getElementById('search');
-const noResults = document.getElementById('no-results');
+// ==========================================
+// 3. LÓGICA DE NAVEGAÇÃO E SCORES
+// ==========================================
+let currentCat = '', currentScore = null;
 
-let filtroCategoria = 'Todos';
+function nav(pg) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  document.getElementById('pg-' + pg).classList.add('on');
+  document.getElementById('search').value = '';
+  window.scrollTo(0, 0);
+  
+  if (pg === 'esp') {
+    document.getElementById('sub').innerText = 'Selecione a especialidade';
+    document.getElementById('search-box').style.display = 'block';
+    renderEsp();
+  } else if (pg === 'score') {
+    document.getElementById('sub').innerText = currentCat;
+    document.getElementById('search-box').style.display = 'block';
+    renderScores();
+  } else if (pg === 'quiz') {
+    document.getElementById('sub').innerText = currentScore.n;
+    document.getElementById('search-box').style.display = 'none';
+  }
+}
 
-// categorias únicas
-const categorias = ['Todos', ...new Set(SCORES.map(s => s.categoria))];
-categorias.forEach(cat => {
-  const btn = document.createElement('button');
-  btn.className = 'tab' + (cat === 'Todos' ? ' active' : '');
-  btn.textContent = cat;
-  btn.onclick = () => {
-    filtroCategoria = cat;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-  };
-  tabsEl.appendChild(btn);
+function renderEsp() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const cats = [...new Set(DB.map(s => s.c))];
+  let html = '', count = 0;
+  
+  cats.forEach(c => {
+    const scores = DB.filter(s => s.c === c);
+    if (q && !scores.some(s => s.n.toLowerCase().includes(q) || s.d.toLowerCase().includes(q)) && !c.toLowerCase().includes(q)) return;
+    count++;
+    html += `<div class="item" onclick="currentCat='${c}'; nav('score')"><span class="item-title">${c}</span><span class="badge">${scores.length}</span></div>`;
+  });
+  
+  document.getElementById('list-esp').innerHTML = html;
+  document.getElementById('empty-esp').style.display = count === 0 ? 'block' : 'none';
+}
+
+function renderScores() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = DB.filter(s => s.c === currentCat && (s.n.toLowerCase().includes(q) || s.d.toLowerCase().includes(q)));
+  let html = '';
+  
+  filtered.forEach((s) => {
+    const idx = DB.indexOf(s);
+    html += `<div class="item" onclick="openQuiz(${idx})"><div><div class="item-title">${s.n}</div><div class="item-desc">${s.d}</div></div><div style="font-size:1.5rem;color:var(--mut)">›</div></div>`;
+  });
+  
+  document.getElementById('list-score').innerHTML = html;
+  document.getElementById('empty-score').style.display = filtered.length === 0 ? 'block' : 'none';
+}
+
+function openQuiz(idx) {
+  currentScore = DB[idx];
+  document.getElementById('q-title').innerText = currentScore.n;
+  document.getElementById('q-desc').innerText = currentScore.d;
+  document.getElementById('q-res').className = 'res';
+  
+  let html = '';
+  currentScore.f.forEach((f, i) => {
+    html += `<div class="q"><label class="q-title">${f[0]}</label>`;
+    if (f[1] === 'num-idade' || f[1] === 'num-cr') {
+      html += `<input type="number" step="any" class="num-${f[1].split('-')[1]}" placeholder="Digite...">`;
+    } else {
+      html += `<div class="opts">`;
+      f[1].forEach((o, j) => {
+        html += `<label><input type="radio" name="q${i}" value="${o[1]}" ${j===0?'checked':''}>${o[0]}</label>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+  document.getElementById('q-form').innerHTML = html;
+  nav('quiz');
+}
+
+function calc() {
+  const radios = document.querySelectorAll('input[type="radio"]:checked');
+  const v = Array.from(radios).map(r => parseFloat(r.value));
+  const inputs = {};
+  document.querySelectorAll('input[type="number"]').forEach(n => {
+    inputs[n.className.replace('num-', '')] = n.value;
+  });
+  
+  const res = currentScore.calc(v, inputs);
+  const box = document.getElementById('q-res');
+  box.className = 'res on ' + res.r;
+  box.innerHTML = `<div class="val">${res.v}</div><div class="txt">${res.t}</div>`;
+}
+
+function reset() {
+  document.getElementById('q-form').querySelectorAll('input').forEach(i => {
+    if (i.type === 'radio') i.checked = i.parentElement.parentElement.children[0] === i.parentElement;
+    if (i.type === 'number') i.value = '';
+  });
+  document.getElementById('q-res').className = 'res';
+}
+
+document.getElementById('search').addEventListener('input', () => {
+  if (document.getElementById('pg-esp').classList.contains('on')) renderEsp();
+  if (document.getElementById('pg-score').classList.contains('on')) renderScores();
 });
 
-function render() {
-  const busca = searchEl.value.toLowerCase().trim();
-  container.innerHTML = '';
-  let encontrados = 0;
-
-  SCORES.forEach(score => {
-    if (filtroCategoria !== 'Todos' && score.categoria !== filtroCategoria) return;
-    if (busca && !score.nome.toLowerCase().includes(busca) && !score.desc.toLowerCase().includes(busca)) return;
-
-    encontrados++;
-    const card = document.createElement('div');
-    card.className = 'score-card';
-
-    const h2 = document.createElement('h2');
-    h2.innerHTML = `<span>${score.nome}</span><span class="toggle-icon">▼</span>`;
-    h2.onclick = () => card.classList.toggle('collapsed');
-
-    const desc = document.createElement('div');
-    desc.className = 'desc';
-    desc.textContent = score.desc;
-
-    const body = document.createElement('div');
-    body.className = 'score-body';
-
-    const inputs = {};
-    score.campos.forEach((campo, idx) => {
-      const q = document.createElement('div');
-      q.className = 'question';
-
-      const titulo = document.createElement('label');
-      titulo.className = 'q-title';
-      titulo.textContent = campo.titulo;
-      q.appendChild(titulo);
-
-      if (campo.tipo === 'radio') {
-        const opts = document.createElement('div');
-        opts.className = 'options';
-        campo.opcoes.forEach(([label, valor], i) => {
-          const lbl = document.createElement('label');
-          const input = document.createElement('input');
-          input.type = 'radio';
-          input.name = `${score.id}-${idx}`;
-          input.value = valor;
-          if (i === 0) input.checked = true;
-          input.onchange = () => calcular(score, card, inputs);
-          lbl.appendChild(input);
-          lbl.appendChild(document.createTextNode(label));
-          opts.appendChild(lbl);
-        });
-        q.appendChild(opts);
-      } else if (campo.tipo === 'number') {
-        const input = document.createElement('input');
-        input.type = 'number';
-        input.step = 'any';
-        input.placeholder = campo.placeholder || '';
-        input.id = `${score.id}-${campo.id}`;
-        input.oninput = () => calcular(score, card, inputs);
-        inputs[campo.id] = input;
-        q.appendChild(input);
-      }
-
-      body.appendChild(q);
-    });
-
-    // botões
-    const btnCalc = document.createElement('button');
-    btnCalc.className = 'btn';
-    btnCalc.textContent = 'Calcular';
-    btnCalc.onclick = () => calcular(score, card, inputs);
-
-    const btnReset = document.createElement('button');
-    btnReset.className = 'btn btn-secondary';
-    btnReset.textContent = 'Limpar';
-    btnReset.onclick = () => {
-      card.querySelectorAll('input[type="radio"]').forEach((inp, i) => {
-        if (i % 1 === 0) inp.checked = false;
-      });
-      // re-marcar primeira opção de cada grupo
-      const grupos = {};
-      card.querySelectorAll('input[type="radio"]').forEach(inp => {
-        if (!grupos[inp.name]) {
-          grupos[inp.name] = true;
-          inp.checked = true;
-        } else {
-          inp.checked = false;
-        }
-      });
-      card.querySelectorAll('input[type="number"]').forEach(i => i.value = '');
-      const res = card.querySelector('.result');
-      res.classList.remove('show');
-    };
-
-    body.appendChild(btnCalc);
-    body.appendChild(btnReset);
-
-    const result = document.createElement('div');
-    result.className = 'result';
-    body.appendChild(result);
-
-    card.appendChild(h2);
-    card.appendChild(desc);
-    card.appendChild(body);
-    container.appendChild(card);
-
-    // cálculo inicial
-    calcular(score, card, inputs);
-  });
-
-  noResults.classList.toggle('show', encontrados === 0);
+// ==========================================
+// 4. LÓGICA DO GUIA DE PRESCRIÇÃO (SIDEBAR)
+// ==========================================
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('overlay');
+  if (sb.classList.contains('open')) {
+    sb.classList.remove('open');
+    ov.classList.remove('open');
+  } else {
+    sb.classList.add('open');
+    ov.classList.add('open');
+  }
 }
 
-function calcular(score, card, inputs) {
-  const grupos = {};
-  card.querySelectorAll('input[type="radio"]:checked').forEach(inp => {
-    grupos[inp.name] = inp.value;
-  });
-  const valores = Object.values(grupos).map(v => parseFloat(v));
-  const numeroInputs = {};
-  Object.keys(inputs).forEach(k => numeroInputs[k] = inputs[k].value);
+function renderDrugs() {
+  const q = document.getElementById('search-drug').value.toLowerCase();
+  const list = document.getElementById('drug-list');
+  list.innerHTML = '';
+  
+  const filtered = guiaRemedios.filter(d => d.nome.toLowerCase().includes(q) || d.classe.toLowerCase().includes(q) || d.dose.toLowerCase().includes(q));
+  
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center; color:var(--mut); margin-top:20px;">Nenhum remédio encontrado.</div>';
+    return;
+  }
 
-  const resultado = score.calc(valores, numeroInputs);
-  const res = card.querySelector('.result');
-  res.className = 'result show risk-' + resultado.risco;
-  res.innerHTML = `
-    <div class="score-value">${resultado.score}</div>
-    <div class="interpretation">${resultado.texto}</div>
-    <div class="recommendation">${score.nome} — ${score.desc}</div>
-  `;
+  filtered.forEach(d => {
+    list.innerHTML += `
+      <div class="drug-card">
+        <div class="drug-header">
+          <span class="drug-name">${d.nome}</span>
+          <span class="drug-class">${d.classe}</span>
+        </div>
+        <div class="drug-dose"><strong>Dose:</strong> ${d.dose}</div>
+        <div class="drug-obs">⚠️ ${d.obs}</div>
+      </div>
+    `;
+  });
 }
 
-searchEl.addEventListener('input', render);
+document.getElementById('search-drug').addEventListener('input', renderDrugs);
+renderDrugs(); // Inicia a lista
 
-// inicial
-render();
+// ==========================================
+// 5. INICIALIZAÇÃO DO APP
+// ==========================================
+nav('esp');
 </script>
 </body>
 </html>
