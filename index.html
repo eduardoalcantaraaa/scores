@@ -3,170 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MedCore - Futuristic</title>
+<title>MedCore - Apple Style</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap');
-
-  :root { 
-    --bg: #050914; 
-    --glass: rgba(16, 25, 43, 0.7); 
-    --glass-brd: rgba(56, 189, 248, 0.3); 
-    --pri: #00f3ff; 
-    --pri-dark: #0088cc;
-    --txt: #e2e8f0; 
-    --mut: #8b9bb4; 
-    --ok: #00ff88; 
-    --wr: #ffb800; 
-    --dg: #ff3366; 
+  :root {
+    --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --text-mut: #86868b;
+    --border: #d2d2d7; --pri: #0071e3; --pri-hover: #0077ed;
+    --red: #ff3b30; --green: #34c759; --yellow: #ffcc00;
   }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body { background: var(--bg); color: var(--text); padding-bottom: 40px; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+  header { background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 1.3rem; font-weight: 600; cursor: pointer; }
+  header p { font-size: 0.85rem; color: var(--text-mut); margin-top: 4px; }
   
-  body { 
-    background-color: var(--bg); 
-    background-image: radial-gradient(circle at 50% 0%, #0a1c3a 0%, transparent 70%), 
-                      linear-gradient(0deg, var(--bg) 0%, transparent 100%);
-    color: var(--txt); 
-    padding-bottom: 40px; 
-    overflow-x: hidden; 
-    min-height: 100vh;
-  }
-
-  h1, h2, .item-title, .drug-name { font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
-
-  /* HEADER FUTURISTA */
-  header { 
-    padding: 24px 20px; 
-    text-align: center; 
-    position: relative; 
-    border-bottom: 1px solid var(--glass-brd);
-    background: linear-gradient(180deg, rgba(0, 243, 255, 0.1) 0%, transparent 100%);
-    box-shadow: 0 4px 30px rgba(0, 243, 255, 0.1);
-  }
-  header h1 { font-size: 1.5rem; color: #fff; text-shadow: 0 0 10px var(--pri); cursor: pointer; }
-  header p { font-size: 0.85rem; color: var(--pri); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+  .btn-guia { position: absolute; top: 20px; right: 20px; background: var(--pri); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 500; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+  .btn-guia:hover { background: var(--pri-hover); }
   
-  .btn-guia { 
-    position: absolute; top: 24px; right: 20px; 
-    background: rgba(0, 243, 255, 0.1); 
-    border: 1px solid var(--pri); 
-    color: var(--pri); 
-    padding: 8px 14px; 
-    border-radius: 4px; 
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.8rem;
-    cursor: pointer; 
-    transition: all 0.3s;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-  }
-  .btn-guia:hover { background: var(--pri); color: var(--bg); box-shadow: 0 0 20px var(--pri); }
-
-  input[type="text"] { 
-    width: 100%; max-width: 600px; 
-    padding: 14px 16px; 
-    border-radius: 8px; 
-    border: 1px solid var(--glass-brd); 
-    margin-top: 20px; 
-    background: var(--glass); 
-    color: #fff; 
-    font-size: 1rem; 
-    backdrop-filter: blur(10px);
-    transition: all 0.3s;
-  }
-  input[type="text"]:focus { outline: none; border-color: var(--pri); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); }
-
-  .container { max-width: 900px; margin: 30px auto; padding: 0 16px; }
-  .pg { display: none; animation: fadeIn 0.4s ease-out; }
+  .search-box { margin-top: 16px; }
+  input[type="text"] { width: 100%; max-width: 600px; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); font-size: 1rem; outline: none; transition: 0.2s; }
+  input[type="text"]:focus { border-color: var(--pri); background: #fff; box-shadow: 0 0 0 3px rgba(0,113,227,0.2); }
+  
+  .container { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+  .pg { display: none; animation: slideUp 0.3s ease-out; }
   .pg.on { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-
-  .back { background: none; border: none; color: var(--pri); font-size: 0.9rem; font-family: 'Orbitron', sans-serif; cursor: pointer; margin-bottom: 20px; padding: 8px 0; text-transform: uppercase; letter-spacing: 1px; }
-  .back:hover { text-shadow: 0 0 8px var(--pri); }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   
-  .title { font-size: 1.2rem; margin-bottom: 20px; border-bottom: 1px solid var(--glass-brd); padding-bottom: 10px; color: var(--pri); }
-
+  .back { background: none; border: none; color: var(--pri); font-size: 1rem; font-weight: 500; cursor: pointer; margin-bottom: 16px; padding: 8px 0; display: inline-flex; align-items: center; }
+  .back:hover { text-decoration: underline; }
+  .title { font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; letter-spacing: -0.5px; }
+  
   .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
   @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr; } }
   
-  /* CARDS FUTURISTAS */
-  .item { 
-    background: var(--glass); 
-    border: 1px solid var(--glass-brd); 
-    border-radius: 12px; 
-    padding: 20px; 
-    cursor: pointer; 
-    display: flex; justify-content: space-between; align-items: center; 
-    text-align: left; color: var(--txt); 
-    backdrop-filter: blur(10px);
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .item::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--pri); transition: 0.3s; }
-  .item:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 243, 255, 0.15); border-color: var(--pri); }
-  .item:hover::before { width: 100%; opacity: 0.1; }
+  .item { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-align: left; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .item:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .item-title { font-weight: 600; font-size: 1rem; }
+  .item-desc { font-size: 0.85rem; color: var(--text-mut); margin-top: 4px; }
+  .badge { font-size: 0.8rem; background: var(--bg); color: var(--text-mut); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
   
-  .item-title { font-size: 1rem; color: #fff; }
-  .item-desc { font-size: 0.8rem; color: var(--mut); margin-top: 6px; line-height: 1.4; }
-  .badge { font-size: 0.8rem; background: rgba(0, 243, 255, 0.1); border: 1px solid var(--pri); color: var(--pri); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-
-  /* FORMULÁRIO DE SCORES */
-  .card { background: var(--glass); border-radius: 16px; padding: 24px; border: 1px solid var(--glass-brd); backdrop-filter: blur(10px); }
-  .q { padding: 16px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+  .card { background: var(--card); border-radius: 20px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+  .q { padding: 16px 0; border-bottom: 1px solid var(--bg); }
   .q:last-child { border-bottom: none; }
-  .q-title { display: block; font-size: 0.95rem; margin-bottom: 12px; font-weight: 500; color: #fff; }
+  .q-title { display: block; font-size: 1rem; font-weight: 500; margin-bottom: 12px; }
   .opts { display: flex; flex-direction: column; gap: 10px; }
-  .opts label { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid transparent; font-size: 0.9rem; cursor: pointer; transition: 0.2s; }
-  .opts label:hover { background: rgba(0, 243, 255, 0.05); border-color: rgba(0, 243, 255, 0.3); }
-  input[type="radio"] { accent-color: var(--pri); width: 18px; height: 18px; }
-  input[type="number"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--glass-brd); background: rgba(0,0,0,0.3); color: var(--txt); font-size: 1rem; }
+  .opts label { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; background: var(--bg); font-size: 0.95rem; cursor: pointer; border: 1px solid transparent; transition: 0.2s; }
+  .opts label:hover { border-color: var(--border); }
+  .opts input:checked + span { font-weight: 600; }
+  input[type="radio"] { accent-color: var(--pri); width: 20px; height: 20px; }
+  input[type="number"] { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); font-size: 1rem; outline: none; }
   
   .btn-row { display: flex; gap: 12px; margin-top: 24px; }
-  .btn { background: var(--pri); color: var(--bg); border: none; padding: 14px; border-radius: 8px; font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; flex: 1; font-size: 1rem; transition: 0.3s; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); }
-  .btn:hover { background: #fff; box-shadow: 0 0 25px #fff; }
-  .btn.sec { background: transparent; color: var(--mut); border: 1px solid var(--mut); box-shadow: none; flex: 0; padding: 14px 24px; }
-  .btn.sec:hover { background: rgba(255,255,255,0.1); color: #fff; box-shadow: none; }
+  .btn { background: var(--pri); color: #fff; border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; flex: 1; font-size: 1rem; transition: 0.2s; }
+  .btn:hover { background: var(--pri-hover); }
+  .btn.sec { background: var(--bg); color: var(--text); flex: 0; padding: 14px 24px; }
+  .btn.sec:hover { background: #e5e5ea; }
   
-  .res { display: none; margin-top: 24px; padding: 20px; border-radius: 12px; border-left: 4px solid var(--pri); background: rgba(0, 243, 255, 0.05); }
-  .res.on { display: block; animation: fadeIn 0.3s; }
-  .val { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: bold; color: var(--pri); text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
-  .txt { font-size: 1rem; margin-top: 8px; font-weight: 500; color: #fff; }
-  .low { border-color: var(--ok); background: rgba(0, 255, 136, 0.05); } .low .val { color: var(--ok); text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
-  .mid { border-color: var(--wr); background: rgba(255, 184, 0, 0.05); } .mid .val { color: var(--wr); text-shadow: 0 0 10px rgba(255, 184, 0, 0.5); }
-  .high { border-color: var(--dg); background: rgba(255, 51, 102, 0.05); } .high .val { color: var(--dg); text-shadow: 0 0 10px rgba(255, 51, 102, 0.5); }
-  .empty { text-align: center; color: var(--mut); padding: 20px; display: none; }
+  .res { display: none; margin-top: 24px; padding: 20px; border-radius: 16px; background: var(--bg); }
+  .res.on { display: block; animation: slideUp 0.3s; }
+  .val { font-size: 2rem; font-weight: 700; color: var(--pri); }
+  .txt { font-size: 1rem; margin-top: 8px; font-weight: 500; }
+  .low .val { color: var(--green); }
+  .mid .val { color: var(--yellow); }
+  .high .val { color: var(--red); }
+  .empty { text-align: center; color: var(--text-mut); padding: 20px; display: none; }
 
-  /* SIDEBAR (GUIA DE PRESCRIÇÃO) */
-  #sidebar { position: fixed; top: 0; right: -100%; width: 90%; max-width: 420px; height: 100%; background: rgba(8, 14, 26, 0.95); z-index: 1000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; overflow-y: auto; border-left: 1px solid var(--pri); box-shadow: -10px 0 30px rgba(0, 243, 255, 0.1); backdrop-filter: blur(15px); }
+  #sidebar { position: fixed; top: 0; right: -100%; width: 90%; max-width: 420px; height: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); z-index: 1000; transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); padding: 24px; overflow-y: auto; box-shadow: -5px 0 30px rgba(0,0,0,0.1); }
   #sidebar.open { right: 0; }
-  #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; backdrop-filter: blur(3px); }
+  #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 999; display: none; }
   #overlay.open { display: block; }
   
-  .drug-card { background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--pri); margin-bottom: 12px; transition: 0.2s; }
-  .drug-card:hover { background: rgba(0, 243, 255, 0.05); border-color: var(--pri); }
+  .drug-card { background: var(--bg); padding: 16px; border-radius: 14px; margin-bottom: 12px; border: 1px solid var(--border); }
   .drug-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .drug-name { color: #fff; font-size: 1rem; }
-  .drug-class { font-size: 0.7rem; background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.3); padding: 2px 8px; border-radius: 4px; color: var(--pri); text-transform: uppercase; letter-spacing: 0.5px; }
-  .drug-dose { font-size: 0.9rem; color: #ddd; line-height: 1.4; }
-  .drug-obs { font-size: 0.8rem; color: var(--wr); margin-top: 8px; background: rgba(255, 184, 0, 0.1); padding: 8px; border-radius: 6px; }
+  .drug-name { font-weight: 600; font-size: 1rem; color: var(--text); }
+  .drug-class { font-size: 0.7rem; background: #fff; padding: 2px 8px; border-radius: 10px; color: var(--text-mut); border: 1px solid var(--border); }
+  .drug-dose { font-size: 0.9rem; line-height: 1.4; color: var(--text); }
+  .drug-obs { font-size: 0.8rem; color: var(--red); margin-top: 8px; font-weight: 500; }
 </style>
 </head>
 <body>
 
 <header>
   <h1 onclick="nav('esp')">MedCore</h1>
-  <button class="btn-guia" onclick="toggleSidebar()">💊 Guia</button>
+  <button class="btn-guia" onclick="toggleSidebar()">Guia</button>
   <p id="sub">Selecione a especialidade</p>
-  <div id="search-box"><input type="text" id="search" placeholder="🔍 Buscar score..."></div>
+  <div class="search-box" id="search-box"><input type="text" id="search" placeholder="Buscar score..."></div>
 </header>
 
-<!-- SIDEBAR -->
 <div id="sidebar">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-    <h2 style="font-size:1.2rem; color:var(--pri);">💊 Prescrição</h2>
-    <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--mut); font-size:1.5rem; cursor:pointer;">✕</button>
+    <h2 style="font-size:1.3rem; font-weight:700;">Guia de Prescrição</h2>
+    <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--text-mut); font-size:1.8rem; cursor:pointer;">&times;</button>
   </div>
-  <input type="text" id="search-drug" placeholder="🔍 Buscar medicamento..." style="margin-top:0; margin-bottom:20px;">
+  <input type="text" id="search-drug" placeholder="Buscar medicamento..." style="margin-top:0; margin-bottom:20px; background:#fff; border:1px solid var(--border);">
   <div id="drug-list"></div>
 </div>
 <div id="overlay" onclick="toggleSidebar()"></div>
@@ -178,17 +107,17 @@
   </div>
 
   <div id="pg-score" class="pg">
-    <button class="back" onclick="nav('esp')">← Voltar</button>
+    <button class="back" onclick="nav('esp')">&larr; Voltar</button>
     <h2 class="title" id="title-score"></h2>
     <div class="grid" id="list-score"></div>
     <div class="empty" id="empty-score">Nenhum resultado encontrado.</div>
   </div>
 
   <div id="pg-quiz" class="pg">
-    <button class="back" onclick="nav('score')">← Voltar</button>
+    <button class="back" onclick="nav('score')">&larr; Voltar</button>
     <div class="card">
-      <h2 id="q-title" style="color:var(--pri); font-size:1.2rem;"></h2>
-      <p id="q-desc" style="color:var(--mut); font-size:0.85rem; margin-bottom:20px;"></p>
+      <h2 id="q-title" style="font-size:1.4rem; margin-bottom:4px;"></h2>
+      <p id="q-desc" style="color:var(--text-mut); font-size:0.9rem; margin-bottom:20px;"></p>
       <div id="q-form"></div>
       <div class="btn-row">
         <button class="btn" onclick="calc()">Calcular</button>
@@ -201,74 +130,34 @@
 
 <script>
 const DB = [
-  { c: 'Cardiologia', n: 'CHA₂DS₂-VASc', d: 'Risco de AVC em FA.', f: [['IC / Disf. VE', [['Não', 0], ['Sim', 1]]], ['Hipertensão', [['Não', 0], ['Sim', 1]]], ['Idade', [['< 65', 0], ['65-74', 1], ['≥ 75', 2]]], ['Diabetes', [['Não', 0], ['Sim', 1]]], ['AVC/AIT prévio', [['Não', 0], ['Sim', 2]]], ['Doença vascular', [['Não', 0], ['Sim', 1]]], ['Sexo', [['Masc', 0], ['Fem', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s===0?'Baixo risco':s===1?'Risco intermediário':'Alto risco', r: s===0?'low':s===1?'mid':'high' }; } },
+  { c: 'Cardiologia', n: 'CHA2DS2-VASc', d: 'Risco de AVC em FA.', f: [['IC / Disf. VE', [['Não', 0], ['Sim', 1]]], ['Hipertensão', [['Não', 0], ['Sim', 1]]], ['Idade', [['< 65', 0], ['65-74', 1], ['>= 75', 2]]], ['Diabetes', [['Não', 0], ['Sim', 1]]], ['AVC/AIT prévio', [['Não', 0], ['Sim', 2]]], ['Doença vascular', [['Não', 0], ['Sim', 1]]], ['Sexo', [['Masc', 0], ['Fem', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s===0?'Baixo risco':s===1?'Risco intermediário':'Alto risco', r: s===0?'low':s===1?'mid':'high' }; } },
   { c: 'Cardiologia', n: 'HAS-BLED', d: 'Risco de sangramento.', f: [['Hipertensão', [['Não', 0], ['Sim', 1]]], ['Função renal alterada', [['Não', 0], ['Sim', 1]]], ['Função hepática alterada', [['Não', 0], ['Sim', 1]]], ['AVC prévio', [['Não', 0], ['Sim', 1]]], ['Sangramento prévio', [['Não', 0], ['Sim', 1]]], ['INR lábil', [['Não', 0], ['Sim', 1]]], ['Idade > 65', [['Não', 0], ['Sim', 1]]], ['Drogas/Álcool', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=2?'Risco baixo/moderado':'Alto risco', r: s<=2?'low':'high' }; } },
-  { c: 'Cardiologia', n: 'TIMI (SCA)', d: 'Risco em SCA sem supra.', f: [['Idade ≥ 65', [['Não', 0], ['Sim', 1]]], ['≥ 3 fatores risco', [['Não', 0], ['Sim', 1]]], ['DAC conhecida', [['Não', 0], ['Sim', 1]]], ['AAS recente', [['Não', 0], ['Sim', 1]]], ['Angina grave', [['Não', 0], ['Sim', 1]]], ['Alteração ST', [['Não', 0], ['Sim', 1]]], ['Marcadores necrose', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=2?'Baixo':s<=4?'Interm.':'Alto', r: s<=2?'low':s<=4?'mid':'high' }; } },
-  { c: 'Pneumologia', n: 'CURB-65', d: 'Gravidade de pneumonia.', f: [['Confusão', [['Não', 0], ['Sim', 1]]], ['Ureia > 42', [['Não', 0], ['Sim', 1]]], ['FR ≥ 30', [['Não', 0], ['Sim', 1]]], ['PA baixa', [['Não', 0], ['Sim', 1]]], ['Idade ≥ 65', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=1?'Baixo':s===2?'Interm.':'Alto', r: s<=1?'low':s===2?'mid':'high' }; } },
+  { c: 'Pneumologia', n: 'CURB-65', d: 'Gravidade de pneumonia.', f: [['Confusão', [['Não', 0], ['Sim', 1]]], ['Ureia > 42', [['Não', 0], ['Sim', 1]]], ['FR >= 30', [['Não', 0], ['Sim', 1]]], ['PA baixa', [['Não', 0], ['Sim', 1]]], ['Idade >= 65', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=1?'Baixo':s===2?'Interm.':'Alto', r: s<=1?'low':s===2?'mid':'high' }; } },
   { c: 'Pneumologia', n: 'Wells (TEP)', d: 'Probabilidade de TEP.', f: [['Sinais TVP', [['Não', 0], ['Sim', 3]]], ['TEP + provável', [['Não', 0], ['Sim', 3]]], ['FC > 100', [['Não', 0], ['Sim', 1.5]]], ['Imobilização', [['Não', 0], ['Sim', 1.5]]], ['TVP/TEP prévio', [['Não', 0], ['Sim', 1.5]]], ['Hemoptise', [['Não', 0], ['Sim', 1]]], ['Câncer ativo', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s.toFixed(1), t: s<=4?'Baixa':s<=6?'Moderada':'Alta', r: s<=4?'low':s<=6?'mid':'high' }; } },
   { c: 'Neurologia', n: 'Glasgow', d: 'Nível de consciência.', f: [['Abertura ocular', [['Espontânea', 4], ['Chamado', 3], ['Dor', 2], ['Ausente', 1]]], ['Resposta verbal', [['Orientado', 5], ['Confuso', 4], ['Inapropriado', 3], ['Sons', 2], ['Ausente', 1]]], ['Resposta motora', [['Obedece', 6], ['Localiza', 5], ['Retirada', 4], ['Flexão', 3], ['Extensão', 2], ['Ausente', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s>=13?'Leve':s>=9?'Moderado':'Grave', r: s>=13?'low':s>=9?'mid':'high' }; } },
-  { c: 'Neurologia', n: 'NIHSS', d: 'Gravidade do AVC.', f: [['Consciência', [['Alerta', 0], ['Sonolento', 1], ['Estupor', 2], ['Coma', 3]]], ['Olhar', [['Normal', 0], ['Paresia', 1], ['Desvio', 2]]], ['Campo visual', [['Normal', 0], ['Parcial', 1], ['Completa', 2], ['Cegueira', 3]]], ['Paresia facial', [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Completa', 3]]], ['Motor braço', [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Grave', 3], ['Plegia', 4]]], ['Motor perna', [['Normal', 0], ['Leve', 1], ['Moderada', 2], ['Grave', 3], ['Plegia', 4]]], ['Ataxia', [['Ausente', 0], ['1', 1], ['2', 2]]], ['Sensibilidade', [['Normal', 0], ['Leve', 1], ['Grave', 2]]], ['Linguagem', [['Normal', 0], ['Leve', 1], ['Grave', 2], ['Global', 3]]], ['Disartria', [['Normal', 0], ['Leve', 1], ['Grave', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s===0?'Sem déficit':s<=4?'Leve':s<=15?'Moderado':s<=20?'Mod/Grave':'Grave', r: s<=4?'low':s<=15?'mid':'high' }; } },
   { c: 'Nefrologia', n: 'TFG (CKD-EPI)', d: 'Filtração glomerular.', f: [['Sexo', [['Masc', 'M'], ['Fem', 'F']]], ['Idade (anos)', 'num-idade'], ['Creatinina (mg/dL)', 'num-cr']], calc: (v, i) => { const id = parseFloat(i.idade), cr = parseFloat(i.cr); if(!id||!cr) return { v: '-', t: 'Preencha', r: 'mid' }; const k = v[0]==='F'?0.7:0.9, a = v[0]==='F'?-0.241:-0.302, r = cr/k; let tfg = 142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,id); if(v[0]==='F') tfg*=1.012; return { v: tfg.toFixed(1), t: tfg>=90?'G1':tfg>=60?'G2':tfg>=45?'G3a':tfg>=30?'G3b':tfg>=15?'G4':'G5', r: tfg>=60?'low':tfg>=30?'mid':'high' }; } },
-  { c: 'Gastro', n: 'Child-Pugh', d: 'Cirrose.', f: [['Bilirrubina', [['< 2', 1], ['2-3', 2], ['> 3', 3]]], ['Albumina', [['> 3.5', 1], ['2.8-3.5', 2], ['< 2.8', 3]]], ['INR', [['< 1.7', 1], ['1.7-2.3', 2], ['> 2.3', 3]]], ['Ascite', [['Ausente', 1], ['Leve', 2], ['Grave', 3]]], ['Encefalopatia', [['Ausente', 1], ['I-II', 2], ['III-IV', 3]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=6?'Classe A':s<=9?'Classe B':'Classe C', r: s<=6?'low':s<=9?'mid':'high' }; } },
-  { c: 'Gastro', n: 'Blatchford', d: 'Hemorragia digestiva.', f: [['Ureia', [['< 40', 0], ['40-48', 2], ['49-70', 3], ['71-100', 4], ['101-140', 5], ['> 140', 6]]], ['Hb Homem', [['≥ 13', 0], ['12-12.9', 1], ['10-11.9', 3], ['< 10', 6]]], ['Hb Mulher', [['≥ 12', 0], ['10-11.9', 1], ['< 10', 6]]], ['PAS', [['≥ 110', 0], ['100-109', 1], ['90-99', 2], ['< 90', 3]]], ['FC ≥ 100', [['Não', 0], ['Sim', 1]]], ['Melena', [['Não', 0], ['Sim', 1]]], ['Síncope', [['Não', 0], ['Sim', 2]]], ['Hepatopatia', [['Não', 0], ['Sim', 2]]], ['IC', [['Não', 0], ['Sim', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s===0?'Muito baixo':s<=5?'Baixo':'Alto', r: s===0?'low':s<=5?'mid':'high' }; } },
-  { c: 'Infecto', n: 'qSOFA', d: 'Sepse.', f: [['FR ≥ 22', [['Não', 0], ['Sim', 1]]], ['Alt. mental', [['Não', 0], ['Sim', 1]]], ['PAS ≤ 100', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<2?'Baixo':'Alto', r: s<2?'low':'high' }; } },
-  { c: 'Pediatria', n: 'Apgar', d: 'Avaliação do RN.', f: [['FC', [['Ausente', 0], ['< 100', 1], ['> 100', 2]]], ['Respiração', [['Ausente', 0], ['Lenta', 1], ['Choro', 2]]], ['Tônus', [['Flácido', 0], ['Flexão', 1], ['Ativo', 2]]], ['Reflexo', [['Nenhum', 0], ['Careta', 1], ['Choro', 2]]], ['Cor', [['Cianose', 0], ['Acro', 1], ['Rosado', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s>=7?'Boa vitalidade':s>=4?'Depressão mod.':'Grave', r: s>=7?'low':s>=4?'mid':'high' }; } },
-  { c: 'Cirurgia', n: 'Alvarado', d: 'Apendicite.', f: [['Migração FID', [['Não', 0], ['Sim', 1]]], ['Anorexia', [['Não', 0], ['Sim', 1]]], ['Náusea', [['Não', 0], ['Sim', 1]]], ['Dor FID', [['Não', 0], ['Sim', 2]]], ['Blumberg', [['Não', 0], ['Sim', 1]]], ['Temp > 37.3', [['Não', 0], ['Sim', 1]]], ['Leucocitose', [['Não', 0], ['Sim', 2]]], ['Neutrofilia', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=4?'Improvável':s<=6?'Possível':'Provável', r: s<=4?'low':s<=6?'mid':'high' }; } },
-  { c: 'Cirurgia', n: 'Wells (TVP)', d: 'Trombose Venosa.', f: [['Câncer', [['Não', 0], ['Sim', 1]]], ['Paralisia', [['Não', 0], ['Sim', 1]]], ['Acamado', [['Não', 0], ['Sim', 1]]], ['Dor trajeto', [['Não', 0], ['Sim', 1]]], ['Edema', [['Não', 0], ['Sim', 1]]], ['Cacifo', [['Não', 0], ['Sim', 1]]], ['Colaterais', [['Não', 0], ['Sim', 1]]], ['TVP prévia', [['Não', 0], ['Sim', 1]]], ['Alt. provável', [['Não', 0], ['Sim', -2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=0?'Baixa':s<=2?'Moderada':'Alta', r: s<=0?'low':s<=2?'mid':'high' }; } }
+  { c: 'Infecto', n: 'qSOFA', d: 'Sepse.', f: [['FR >= 22', [['Não', 0], ['Sim', 1]]], ['Alt. mental', [['Não', 0], ['Sim', 1]]], ['PAS <= 100', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<2?'Baixo':'Alto', r: s<2?'low':'high' }; } },
+  { c: 'Cirurgia', n: 'Alvarado', d: 'Apendicite.', f: [['Migração FID', [['Não', 0], ['Sim', 1]]], ['Anorexia', [['Não', 0], ['Sim', 1]]], ['Náusea', [['Não', 0], ['Sim', 1]]], ['Dor FID', [['Não', 0], ['Sim', 2]]], ['Blumberg', [['Não', 0], ['Sim', 1]]], ['Temp > 37.3', [['Não', 0], ['Sim', 1]]], ['Leucocitose', [['Não', 0], ['Sim', 2]]], ['Neutrofilia', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=4?'Improvável':s<=6?'Possível':'Provável', r: s<=4?'low':s<=6?'mid':'high' }; } }
 ];
 
-// ==========================================
-// 3. BANCO DE DADOS DO GUIA DE PRESCRIÇÃO (40 MEDICAMENTOS)
-// ==========================================
 const guiaRemedios = [
-  { nome: "Adrenalina", classe: "Emergência", dose: "Parada: 1mg IV a cada 3-5 min. Anafilaxia: 0,3-0,5mg IM na coxa.", obs: "Não confundir via IM com IV em anafilaxia." },
-  { nome: "Amiodarona", classe: "Antiarrítmico", dose: "Parada (FV/TV): 300mg IV bolus.", obs: "Pode causar hipotensão se infundir rápido." },
+  { nome: "Adrenalina", classe: "Emergência", dose: "Parada: 1mg IV a cada 3-5 min. Anafilaxia: 0,3-0,5mg IM.", obs: "Não confundir via IM com IV." },
   { nome: "Amoxicilina", classe: "Antibiótico", dose: "500mg a 1g, de 8/8h ou 12/12h.", obs: "Ajustar na insuficiência renal." },
-  { nome: "Amoxicilina + Clavulanato", classe: "Antibiótico", dose: "875/125mg, de 12/12h.", obs: "Cuidado em hepatopatas." },
   { nome: "Azitromicina", classe: "Antibiótico", dose: "500mg, 1x/dia, por 3 a 5 dias.", obs: "Pode prolongar QT." },
-  { nome: "Cefalexina", classe: "Antibiótico", dose: "500mg a 1g, de 6/6h.", obs: "Infecções de pele e ITU leves." },
   { nome: "Ceftriaxona", classe: "Antibiótico", dose: "1g a 2g, IV, 1x/dia.", obs: "Não precisa ajustar na função renal." },
-  { nome: "Ciprofloxacino", classe: "Antibiótico", dose: "500mg VO ou 400mg IV, de 12/12h.", obs: "Contraindicado na gestação. Risco de tendinite." },
-  { nome: "Claritromicina", classe: "Antibiótico", dose: "500mg, de 12
-      { nome: "Clindamicina", classe: "Antibiótico", dose: "300mg a 600mg, de 6/6h ou 8/8h.", obs: "Ótimo para infecções de pele e suspeita de MRSA." },
   { nome: "Dipirona", classe: "Analgésico", dose: "500mg a 1g, de 6/6h. (Máx: 4g/dia)", obs: "IV: diluir. Evitar se suspeita de dengue." },
-  { nome: "Dexametasona", classe: "Corticoide", dose: "4mg a 10mg, IV ou VO, 1x/dia.", obs: "Útil em crupe, edema cerebral e náuseas." },
-  { nome: "Diclofenaco", classe: "AINE", dose: "50mg VO de 8/8h ou 75mg IM 1x/dia.", obs: "Evitar em nefropatas e úlcera gástrica." },
-  { nome: "Dimenidrinato", classe: "Antiemético", dose: "50mg a 100mg, de 6/6h.", obs: "Causa sonolência. Bom para cinetose." },
-  { nome: "Dobutamina", classe: "Vasoativo", dose: "2 a 20 mcg/kg/min, em bomba de infusão.", obs: "Inotrópico. Pode causar taquicardia." },
-  { nome: "Dopamina", classe: "Vasoativo", dose: "5 a 20 mcg/kg/min, em bomba de infusão.", obs: "Doses baixas (dopaminérgicas), altas (vasopressoras)." },
-  { nome: "Enalapril", classe: "Anti-hipertensivo", dose: "5mg a 20mg, de 12/12h.", obs: "Pode causar tosse seca. Contraindicado na gestação." },
   { nome: "Enoxaparina", classe: "Anticoagulante", dose: "40mg SC 1x/dia (Profilaxia). 1mg/kg 12/12h (Tratamento).", obs: "Ajustar na insuficiência renal grave." },
-  { nome: "Escopolamina", classe: "Antiespasmódico", dose: "10mg a 20mg, VO ou IV, de 8/8h.", obs: "Bom para cólica abdominal e renal." },
-  { nome: "Fentanil", classe: "Opioide", dose: "25 a 100 mcg IV (analgesia).", obs: "Depressão respiratória. Ter Naloxona à mão." },
   { nome: "Furosemida", classe: "Diurético", dose: "20mg a 40mg, VO ou IV, 1x ou 2x/dia.", obs: "Cuidado com hipocalemia." },
-  { nome: "Heparina", classe: "Anticoagulante", dose: "5000 UI SC de 8/8h ou 12/12h (Profilaxia).", obs: "Monitorar plaquetas (risco de HIT)." },
-  { nome: "Hidralazina", classe: "Anti-hipertensivo", dose: "5mg a 10mg IV (crises).", obs: "Usado em emergências hipertensivas e pré-eclâmpsia." },
   { nome: "Hidrocortisona", classe: "Corticoide", dose: "100mg a 200mg, IV, de 6/6h.", obs: "Uso agudo (asma, choque)." },
-  { nome: "Ibuprofeno", classe: "AINE", dose: "400mg a 600mg, de 6/6h ou 8/8h.", obs: "Tomar com alimento. Evitar em nefropatas." },
-  { nome: "Insulina Regular", classe: "Antidiabético", dose: "Conforme glicemia (escala). Ex: 4 a 10 UI SC.", obs: "Cuidado com hipoglicemia. IV em cetoacidose." },
   { nome: "Losartana", classe: "Anti-hipertensivo", dose: "50mg a 100mg, 1x ou 2x ao dia.", obs: "Contraindicado na gestação." },
-  { nome: "Metformina", classe: "Antidiabético", dose: "500mg a 1g, 2x/dia após refeições.", obs: "Suspender antes de exames com contraste." },
-  { nome: "Metoprolol", classe: "Betabloqueador", dose: "25mg a 100mg, 2x ao dia.", obs: "Cuidado em asmáticos. Não suspender abruptamente." },
-  { nome: "Midazolam", classe: "Sedativo", dose: "1mg a 5mg IV (sedação).", obs: "Depressão respiratória. Ter Flumazenil." },
-  { nome: "Morfina", classe: "Opioide", dose: "2mg a 4mg IV a cada 4h (dor intensa).", obs: "Depressão respiratória. Ter Naloxona." },
-  { nome: "Naloxona", classe: "Antídoto", dose: "0,4mg IV (pode repetir a cada 2-3 min).", obs: "Reversão de intoxicação por opioides." },
-  { nome: "Neostigmina", classe: "Antídoto", dose: "0,5mg a 2mg IV.", obs: "Reversão de bloqueio neuromuscular." },
-  { nome: "Nitroglicerina", classe: "Vasodilatador", dose: "5 a 200 mcg/min, bomba de infusão.", obs: "Para edema agudo de pulmão e crise hipertensiva. Cuidado em infarto de VD." },
+  { nome: "Metformina", classe: "Antidiabético", dose: "500mg a 1g, 2x/dia após refeições.", obs: "Suspender antes de contraste." },
   { nome: "Noradrenalina", classe: "Vasoativo", dose: "0,05 a 2 mcg/kg/min, bomba de infusão.", obs: "Droga de escolha no choque séptico." },
   { nome: "Omeprazol", classe: "IBP", dose: "20mg a 40mg, 1x/dia em jejum.", obs: "Tomar 30 min antes do café." },
   { nome: "Ondansetrona", classe: "Antiemético", dose: "4mg a 8mg, de 8/8h (VO ou IV).", obs: "Pode prolongar o QT." },
   { nome: "Paracetamol", classe: "Analgésico", dose: "500mg a 750mg, de 6/6h. (Máx: 4g/dia)", obs: "Cuidado em hepatopatas." },
-  { nome: "Prednisona", classe: "Corticoide", dose: "20mg a 40mg, 1x/dia pela manhã.", obs: "Tomar com alimento. Desmame se uso > 7 dias." },
-  { nome: "Salbutamol", classe: "Broncodilatador", dose: "Spray: 1-2 jatos de 4/4h. Nebulização: 2,5-5mg.", obs: "Pode causar taquicardia." },
-  { nome: "Sinvastatina", classe: "Estatina", dose: "20mg a 40mg, 1x/dia à noite.", obs: "Cuidado com dor muscular (rabdomiólise)." },
-  { nome: "Tramadol", classe: "Analgésico", dose: "50mg a 100mg, de 6/6h.", obs: "Risco de convulsão em doses altas." },
-  { nome: "Vancomicina", classe: "Antibiótico", dose: "15 a 20 mg/kg IV de 12/12h.", obs: "Infundir em 1h (risco de Red Man). Monitorar níveis." }
+  { nome: "Prednisona", classe: "Corticoide", dose: "20mg a 40mg, 1x/dia pela manhã.", obs: "Tomar com alimento. Desmame se uso > 7 dias." }
 ];
 
-// ==========================================
-// 4. LÓGICA DE NAVEGAÇÃO E SCORES
-// ==========================================
 let currentCat = '', currentScore = null;
 
 function nav(pg) {
@@ -314,7 +203,7 @@ function renderScores() {
   
   filtered.forEach((s) => {
     const idx = DB.indexOf(s);
-    html += `<div class="item" onclick="openQuiz(${idx})"><div><div class="item-title">${s.n}</div><div class="item-desc">${s.d}</div></div><div style="font-size:1.5rem;color:var(--mut)">›</div></div>`;
+    html += `<div class="item" onclick="openQuiz(${idx})"><div><div class="item-title">${s.n}</div><div class="item-desc">${s.d}</div></div><div style="font-size:1.5rem;color:var(--text-mut)">&rsaquo;</div></div>`;
   });
   
   document.getElementById('list-score').innerHTML = html;
@@ -335,7 +224,7 @@ function openQuiz(idx) {
     } else {
       html += `<div class="opts">`;
       f[1].forEach((o, j) => {
-        html += `<label><input type="radio" name="q${i}" value="${o[1]}" ${j===0?'checked':''}>${o[0]}</label>`;
+        html += `<label><input type="radio" name="q${i}" value="${o[1]}" ${j===0?'checked':''}><span>${o[0]}</span></label>`;
       });
       html += `</div>`;
     }
@@ -372,9 +261,6 @@ document.getElementById('search').addEventListener('input', () => {
   if (document.getElementById('pg-score').classList.contains('on')) renderScores();
 });
 
-// ==========================================
-// 5. LÓGICA DO GUIA DE PRESCRIÇÃO (SIDEBAR)
-// ==========================================
 function toggleSidebar() {
   const sb = document.getElementById('sidebar');
   const ov = document.getElementById('overlay');
@@ -392,10 +278,10 @@ function renderDrugs() {
   const list = document.getElementById('drug-list');
   list.innerHTML = '';
   
-  const filtered = guiaRemedios.filter(d => d.nome.toLowerCase().includes(q) || d.classe.toLowerCase().includes(q) || d.dose.toLowerCase().includes(q));
+  const filtered = guiaRemedios.filter(d => d.nome.toLowerCase().includes(q) || d.classe.toLowerCase().includes(q));
   
   if (filtered.length === 0) {
-    list.innerHTML = '<div style="text-align:center; color:var(--mut); margin-top:20px;">Nenhum remédio encontrado.</div>';
+    list.innerHTML = '<div style="text-align:center; color:var(--text-mut); margin-top:20px;">Nenhum remédio encontrado.</div>';
     return;
   }
 
@@ -414,9 +300,7 @@ function renderDrugs() {
 }
 
 document.getElementById('search-drug').addEventListener('input', renderDrugs);
-renderDrugs(); // Inicia a lista
-
-// Inicializa o App
+renderDrugs();
 nav('esp');
 </script>
 </body>
