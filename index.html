@@ -138,6 +138,12 @@ const DB = [
   { c: 'Nefrologia', n: 'TFG (CKD-EPI)', d: 'Filtração glomerular.', f: [['Sexo', [['Masc', 'M'], ['Fem', 'F']]], ['Idade (anos)', 'num-idade'], ['Creatinina (mg/dL)', 'num-cr']], calc: (v, i) => { const id = parseFloat(i.idade), cr = parseFloat(i.cr); if(!id||!cr) return { v: '-', t: 'Preencha', r: 'mid' }; const k = v[0]==='F'?0.7:0.9, a = v[0]==='F'?-0.241:-0.302, r = cr/k; let tfg = 142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,id); if(v[0]==='F') tfg*=1.012; return { v: tfg.toFixed(1), t: tfg>=90?'G1':tfg>=60?'G2':tfg>=45?'G3a':tfg>=30?'G3b':tfg>=15?'G4':'G5', r: tfg>=60?'low':tfg>=30?'mid':'high' }; } },
   { c: 'Infecto', n: 'qSOFA', d: 'Sepse.', f: [['FR >= 22', [['Não', 0], ['Sim', 1]]], ['Alt. mental', [['Não', 0], ['Sim', 1]]], ['PAS <= 100', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<2?'Baixo':'Alto', r: s<2?'low':'high' }; } },
   { c: 'Cirurgia', n: 'Alvarado', d: 'Apendicite.', f: [['Migração FID', [['Não', 0], ['Sim', 1]]], ['Anorexia', [['Não', 0], ['Sim', 1]]], ['Náusea', [['Não', 0], ['Sim', 1]]], ['Dor FID', [['Não', 0], ['Sim', 2]]], ['Blumberg', [['Não', 0], ['Sim', 1]]], ['Temp > 37.3', [['Não', 0], ['Sim', 1]]], ['Leucocitose', [['Não', 0], ['Sim', 2]]], ['Neutrofilia', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=4?'Improvável':s<=6?'Possível':'Provável', r: s<=4?'low':s<=6?'mid':'high' }; } }
+  { c: 'Cirurgia', n: 'Alvarado', d: 'Apendicite.', f: [['Migração FID', [['Não', 0], ['Sim', 1]]], ['Anorexia', [['Não', 0], ['Sim', 1]]], ['Náusea', [['Não', 0], ['Sim', 1]]], ['Dor FID', [['Não', 0], ['Sim', 2]]], ['Blumberg', [['Não', 0], ['Sim', 1]]], ['Temp > 37.3', [['Não', 0], ['Sim', 1]]], ['Leucocitose', [['Não', 0], ['Sim', 2]]], ['Neutrofilia', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=4?'Improvável':s<=6?'Possível':'Provável', r: s<=4?'low':s<=6?'mid':'high' }; } },
+  { c: 'Neurologia', n: 'NIHSS (AVC)', d: 'Gravidade do AVC isquêmico.', f: [['Consciência', [['Alerta', 0], ['Sonolento', 1], ['Coma', 3]]], ['Motor braço', [['Normal', 0], ['Leve', 1], ['Grave', 3], ['Plegia', 4]]], ['Linguagem', [['Normal', 0], ['Leve', 1], ['Grave', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=4?'Leve':s<=15?'Moderado':'Grave', r: s<=4?'low':s<=15?'mid':'high' }; } },
+  { c: 'Cardiologia', n: 'TIMI (SCA)', d: 'Risco em SCA sem supra.', f: [['Idade >= 65', [['Não', 0], ['Sim', 1]]], ['DAC conhecida', [['Não', 0], ['Sim', 1]]], ['Alteração ST', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=1?'Baixo':s===2?'Interm.':'Alto', r: s<=1?'low':s===2?'mid':'high' }; } },
+  { c: 'Pediatria', n: 'Apgar', d: 'Avaliação do RN.', f: [['FC', [['Ausente', 0], ['< 100', 1], ['> 100', 2]]], ['Respiração', [['Ausente', 0], ['Lenta', 1], ['Choro', 2]]], ['Tônus', [['Flácido', 0], ['Flexão', 1], ['Ativo', 2]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s>=7?'Boa vitalidade':s>=4?'Depressão mod.':'Grave', r: s>=7?'low':s>=4?'mid':'high' }; } },
+  { c: 'Gastro', n: 'Child-Pugh', d: 'Cirrose hepática.', f: [['Bilirrubina', [['< 2', 1], ['> 3', 3]]], ['Albumina', [['> 3.5', 1], ['< 2.8', 3]]], ['Ascite', [['Ausente', 1], ['Grave', 3]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=6?'Classe A':s<=9?'Classe B':'Classe C', r: s<=6?'low':s<=9?'mid':'high' }; } },
+  { c: 'Cirurgia', n: 'Wells (TVP)', d: 'Trombose venosa.', f: [['Câncer', [['Não', 0], ['Sim', 1]]], ['Acamado', [['Não', 0], ['Sim', 1]]], ['Edema', [['Não', 0], ['Sim', 1]]], ['TVP prévia', [['Não', 0], ['Sim', 1]]]], calc: v => { const s = v.reduce((a,b)=>a+b,0); return { v: s, t: s<=0?'Baixa':s<=2?'Moderada':'Alta', r: s<=0?'low':s<=2?'mid':'high' }; } }
 ];
 
 const guiaRemedios = [
@@ -156,6 +162,19 @@ const guiaRemedios = [
   { nome: "Ondansetrona", classe: "Antiemético", dose: "4mg a 8mg, de 8/8h (VO ou IV).", obs: "Pode prolongar o QT." },
   { nome: "Paracetamol", classe: "Analgésico", dose: "500mg a 750mg, de 6/6h. (Máx: 4g/dia)", obs: "Cuidado em hepatopatas." },
   { nome: "Prednisona", classe: "Corticoide", dose: "20mg a 40mg, 1x/dia pela manhã.", obs: "Tomar com alimento. Desmame se uso > 7 dias." }
+  { nome: "Prednisona", classe: "Corticoide", dose: "20mg a 40mg, 1x/dia pela manhã.", obs: "Tomar com alimento." },
+  { nome: "Amiodarona", classe: "Antiarrítmico", dose: "Parada (FV/TV): 300mg IV bolus.", obs: "Cuidado com hipotensão." },
+  { nome: "Dexametasona", classe: "Corticoide", dose: "4mg a 10mg, IV ou VO, 1x/dia.", obs: "Útil em crupe e náuseas." },
+  { nome: "Midazolam", classe: "Sedativo", dose: "1mg a 5mg IV (sedação).", obs: "Depressão respiratória." },
+  { nome: "Morfina", classe: "Opioide", dose: "2mg a 4mg IV a cada 4h.", obs: "Depressão respiratória. Ter Naloxona." },
+  { nome: "Naloxona", classe: "Antídoto", dose: "0,4mg IV (pode repetir).", obs: "Reversão de opioides." },
+  { nome: "Dobutamina", classe: "Vasoativo", dose: "2 a 20 mcg/kg/min, em bomba.", obs: "Inotrópico. Pode causar taquicardia." },
+  { nome: "Vancomicina", classe: "Antibiótico", dose: "15 a 20 mg/kg IV de 12/12h.", obs: "Infundir em 1h (Red Man)." },
+  { nome: "Clindamicina", classe: "Antibiótico", dose: "300mg a 600mg, de 6/6h.", obs: "Bom para pele/MRSA." },
+  { nome: "Ciprofloxacino", classe: "Antibiótico", dose: "500mg VO de 12/12h.", obs: "Evitar na gestação." },
+  { nome: "Tramadol", classe: "Analgésico", dose: "50mg a 100mg, de 6/6h.", obs: "Risco de convulsão." },
+  { nome: "Ibuprofeno", classe: "AINE", dose: "400mg a 600mg, de 8/8h.", obs: "Tomar com alimento." },
+  { nome: "Heparina", classe: "Anticoagulante", dose: "5000 UI SC de 8/8h.", obs: "Monitorar plaquetas." }
 ];
 
 let currentCat = '', currentScore = null;
